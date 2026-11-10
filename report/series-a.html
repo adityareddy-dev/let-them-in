@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let Them In: OpenTelemetry Demo 3.1.0 (Astronomy Shop)</title>
+<style>
+:root { --ink:#16182d; --soft:#4a4f6a; --line:#d8dae5; --bg:#f7f6f2; --card:#fff; --in:#1d6b34; --in-bg:#e3f4e8; --out:#a51d1d; --out-bg:#fbe5e5; --brand:#c2410c; }
+* { box-sizing:border-box; }
+body { margin:0; font:17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
+a { color:var(--brand); }
+:focus-visible { outline:3px solid var(--brand); outline-offset:2px; }
+.skip { position:absolute; left:-999px; } .skip:focus { left:8px; top:8px; background:#fff; padding:6px 10px; }
+.top { background:var(--ink); color:#fff; padding:28px 24px 34px; }
+.top .wrap { display:flex; gap:18px; align-items:center; }
+.logo { width:56px; height:56px; flex:none; }
+h1 { margin:0; font-size:34px; letter-spacing:-0.5px; }
+.tag { margin:4px 0 0; color:#d9dbea; }
+main { max-width:1120px; margin:0 auto; padding:24px; }
+.wrap { max-width:1120px; margin:0 auto; }
+.score { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:-46px 0 28px; }
+.score div { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+.score p { margin:0; }
+.score .big { font-size:46px; font-weight:800; line-height:1.1; margin-bottom:6px; }
+.score .shopname { font-size:24px; font-weight:800; line-height:1.25; margin-bottom:6px; }
+.score .lbl { color:var(--soft); }
+h2 { font-size:24px; margin:36px 0 12px; }
+.shopper { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin:0 0 18px; }
+.shopper > header { display:flex; gap:12px; align-items:center; }
+.avatar { width:42px; height:42px; border-radius:50%; background:var(--ink); color:#fff; display:grid; place-items:center; font-weight:800; font-size:20px; }
+h3 { margin:0; font-size:20px; } .need { margin:0; color:var(--soft); }
+h4 { margin:12px 0 6px; font-size:15px; text-transform:uppercase; letter-spacing:.06em; color:var(--soft); }
+.cols { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+@media (max-width:760px) { .cols { grid-template-columns:1fr; } }
+.badge { display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:15px; }
+.badge.in { background:var(--in-bg); color:var(--in); } .badge.out { background:var(--out-bg); color:var(--out); } .badge.none { background:#eee; color:#444; }
+blockquote { margin:10px 0; padding:8px 12px; border-left:4px solid var(--out); background:#fff7f7; }
+.where { margin:0 0 8px; color:var(--soft); }
+.note { margin:8px 0; padding:8px 12px; background:#fff8e6; border-left:4px solid #b7791f; }
+.shot { display:block; width:100%; max-height:260px; object-fit:cover; object-position:top; border:1px solid var(--line); border-radius:8px; margin-top:8px; }
+details { margin-top:10px; } summary { cursor:pointer; color:var(--brand); font-weight:600; }
+.trail { padding-left:22px; } .trail li { margin:10px 0; }
+.trail li { display:grid; grid-template-columns:160px 1fr; gap:10px; }
+.trail img { width:160px; border:1px solid var(--line); border-radius:6px; }
+.act { margin:0; font-weight:700; } .res { font-weight:400; color:var(--soft); } .thought { margin:2px 0 0; color:var(--soft); font-size:15px; }
+.box { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+pre.diff { background:#0f1222; color:#e6e8f2; padding:14px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.45; max-height:520px; }
+pre.diff .add { color:#8ce99a; } pre.diff .del { color:#ffa8a8; } pre.diff .meta { color:#a5b4fc; }
+.helps { color:var(--soft); }
+pre.tree { background:#f1f2f7; padding:12px; border-radius:8px; font-size:13px; overflow:auto; max-height:420px; white-space:pre-wrap; }
+table { border-collapse:collapse; width:100%; } th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; } td { width:90px; font-weight:700; }
+footer { color:var(--soft); font-size:15px; padding:30px 24px; max-width:1120px; margin:0 auto; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to results</a>
+<div class="top"><div class="wrap">
+<svg class="logo" viewBox="0 0 64 64" role="img" aria-label="Let Them In logo, an open door"><rect x="6" y="6" width="52" height="52" rx="12" fill="#c2410c"/><path d="M20 50V14h24v36" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><path d="M20 14l14 5v35l-14-4z" fill="#fff"/><circle cx="30" cy="34" r="2.2" fill="#c2410c"/></svg>
+<div><h1>Let Them In</h1><p class="tag">Who does this shop lock out? AI shoppers with different access needs try it, the AI fixes what stopped them, and the same shoppers go again.</p></div>
+</div></div>
+<main id="main">
+<div class="score">
+<div><p class="big">3 of 5</p><p class="lbl">bought, before</p></div><div><p class="big">4 of 5</p><p class="lbl">bought, after fix 1</p></div><div><p class="big">4 of 5</p><p class="lbl">bought, after fix 2</p></div>
+<div><p class="shopname">OpenTelemetry Demo 3.1.0</p><p class="lbl">the real shop, frontend unchanged before the fix</p></div>
+</div>
+<h2>The shoppers</h2>
+<article class="shopper" id="tom">
+  <header><span class="avatar" aria-hidden="true">T</span><div><h3>Tom</h3><p class="need">No access needs, mouse</p></div></header>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+<section aria-label="Tom, before"><h4>Before</h4><span class="badge in">Got in, bought in 9 steps</span><img class="shot" src="../runs/series-a/20261110-0314-before/tom/final.jpg" alt="Tom's screen at the end, /cart/checkout/05cd4f46-dcb5-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, before</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click button[submit] &quot;Go Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the home page, and the shopping button is the fastest way to start selecting a product.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the product grid, and I need to pick one telescope to start checkout, so I’ll open the travel refractor telescope.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I see the shipping address email field, so I’ll replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; tom@example.com <span class="res">typed</span></p><p class="thought">I see the email field already filled, and I need to replace it with my own address.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve updated the email, and now I need to find the checkout controls lower on the cart page.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">click input[text] &quot;0000-0000-0000-0000&quot;  <span class="res">clicked</span></p><p class="thought">I’ve already fixed the email, and the next visible editable field is the credit card number, so I’ll move there next.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">The email is already set correctly, so I need to move on through the checkout form.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/tom/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve already updated the email, and the payment details look filled in, so I can submit the order now.</p></div></li></ol></details></section>
+<section aria-label="Tom, after fix 1"><h4>After fix 1</h4><span class="badge in">Got in, bought in 7 steps</span><img class="shot" src="../runs/series-a/20261110-0321-after/tom/final.jpg" alt="Tom's screen at the end, /cart/checkout/e856d250-dcb5-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 1</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click button[submit] &quot;Go Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the home page and need to start shopping, so I’ll use the main Go Shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the product grid, and I need to open one telescope item to buy it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to add this telescope to the cart before checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; tom@example.com <span class="res">typed</span></p><p class="thought">I can already see the email field, so I’ll replace the sample email with mine first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve entered the email, and I need to get to the rest of the checkout form, so I’ll scroll down.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I see the shipping and payment fields, and I need to keep the sample details except for the email, so I’ll scroll to the rest of the form and continue.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/tom/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve reached the payment step and the details shown look filled in, so I should submit the order now.</p></div></li></ol></details></section>
+<section aria-label="Tom, after fix 2"><h4>After fix 2</h4><span class="badge in">Got in, bought in 7 steps</span><img class="shot" src="../runs/series-a/20261110-0327-after2/tom/final.jpg" alt="Tom's screen at the end, /cart/checkout/bd2e3318-dcb6-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 2</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click button[submit] &quot;Go Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the home page and need to start shopping, so I’ll use the main shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the product list, and I’ll open a telescope product to start the purchase.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; tom@example.com <span class="res">typed</span></p><p class="thought">I see the shipping email field and need to replace the sample address with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve updated the email already, and now I need to find the rest of the checkout form below.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I already changed the email, and I need to see the rest of the checkout fields and the submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/tom/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">The payment details are already filled, so I just need to submit the order now.</p></div></li></ol></details></section>
+  </div>
+</article>
+<article class="shopper" id="joel">
+  <header><span class="avatar" aria-hidden="true">J</span><div><h3>Joel</h3><p class="need">Keyboard only</p></div></header>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+<section aria-label="Joel, before"><h4>Before</h4><span class="badge out">Locked out, still stuck after 30 steps</span><blockquote>Last words: I’m submitting the order now.</blockquote><p class="where">Ended on <code>/</code></p><p class="note">No order from Joel reached the shop. email-service.log in this round has four confirmations, one each for Maya, Tom, Ines and Kofi.</p><img class="shot" src="../runs/series-a/20261110-0314-before/joel/step-30.jpg" alt="Joel's screen at the end, /">
+      <details><summary>Every step, before</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page, and the main shopping button is likely next in the tab order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to get into the shop, so I’ll move to the shopping button and open it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 3 time(s)</span></p><p class="thought">I’m on the home page and need to reach the shopping button to start checkout, so I’ll keep tabbing to the main call-to-action.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-04.jpg" alt="What the screen showed at step 4, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product card and it looks focused, so I’ll open it to continue toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-05.jpg" alt="What the screen showed at step 5, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m likely on the quantity selector, so I’ll move to the Add To Cart button and activate it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-06.jpg" alt="What the screen showed at step 6, /product/0PUK6V6EV0"><div><p class="act">press Tab then Enter Tab then Enter <span class="res">Tab then Enter is not a key you can use</span></p><p class="thought">I’m likely on the quantity control, so I’ll move to Add To Cart and press it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-07.jpg" alt="What the screen showed at step 7, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I likely need to move from the product controls toward the cart link, so I’ll tab once and see where focus lands.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-08.jpg" alt="What the screen showed at step 8, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m still on the product page, and tabbing should move me toward the Add to Cart button or the next focusable control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-09.jpg" alt="What the screen showed at step 9, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m still on the product page and need to reach the Add to Cart button, so I’ll move focus forward once.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-10.jpg" alt="What the screen showed at step 10, /product/0PUK6V6EV0"><div><p class="act">press Tab ثم Enter Tab ثم Enter <span class="res">Tab ثم Enter is not a key you can use</span></p><p class="thought">I’m likely on the product controls, so I’ll move to the Add To Cart button and activate it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-11.jpg" alt="What the screen showed at step 11, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page, and I need to get the item into the cart first, so I’ll move to the Add to Cart button and activate it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-12.jpg" alt="What the screen showed at step 12, /product/0PUK6V6EV0"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product card and can open it to continue toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-13.jpg" alt="What the screen showed at step 13, /product/LS4PSXUNUM"><div><p class="act">press Tab Tab <span class="res">pressed Tab 2 time(s)</span></p><p class="thought">I’m on the product page and need to add the item to the cart, so I’ll move focus to the Add To Cart button and activate it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-14.jpg" alt="What the screen showed at step 14, /product/LS4PSXUNUM"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product card that looks focused, so I’ll open it to get to the buy button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-15.jpg" alt="What the screen showed at step 15, /product/OLJCESPC7Z"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to get this item into the cart, so I’ll move to the Add to Cart button if needed and press it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-16.jpg" alt="What the screen showed at step 16, /product/OLJCESPC7Z"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to reach the checkout flow, so I’ll keep tabbing to the next interactive element.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-17.jpg" alt="What the screen showed at step 17, /product/OLJCESPC7Z"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to find the next focusable control to continue to checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-18.jpg" alt="What the screen showed at step 18, /product/OLJCESPC7Z"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product suggestion card with focus, so I’ll activate it to move toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-19.jpg" alt="What the screen showed at step 19, /product/HQTGWGPNH4"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I likely added the item, so I’ll move focus toward the cart/checkout next.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-20.jpg" alt="What the screen showed at step 20, /product/HQTGWGPNH4"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m focused on a product card, so I’ll open this item and continue toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-21.jpg" alt="What the screen showed at step 21, /product/2ZYFJ3GM2N"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to reach the cart or checkout, so I’ll keep tabbing to the next control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-22.jpg" alt="What the screen showed at step 22, /product/2ZYFJ3GM2N"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product grid and need to reach the checkout flow, so I’ll keep tabbing to the next focusable control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-23.jpg" alt="What the screen showed at step 23, /product/2ZYFJ3GM2N"><div><p class="act">press Tab Tab <span class="res">pressed Tab 4 time(s)</span></p><p class="thought">I’m on the suggested products and need to reach the add-to-cart or cart controls, so I’ll keep tabbing through the product links.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-24.jpg" alt="What the screen showed at step 24, /product/2ZYFJ3GM2N"><div><p class="act">press Tab Tab <span class="res">pressed Tab 5 time(s)</span></p><p class="thought">I’m near the footer, so I’ll tab onward to find the next interactive element, likely a product or cart control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-25.jpg" alt="What the screen showed at step 25, /product/2ZYFJ3GM2N"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’ve tabbed likely onto a navigable control, so I’ll press Enter to open the next step toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-26.jpg" alt="What the screen showed at step 26, /cart"><div><p class="act">type focused element joel@example.com <span class="res">typed into the focused element</span></p><p class="thought">I’m at the shipping address form, so I’ll replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-27.jpg" alt="What the screen showed at step 27, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 8 time(s)</span></p><p class="thought">I’ve updated the email, and now I need to move through the remaining checkout fields to the submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-28.jpg" alt="What the screen showed at step 28, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve already updated the email, and I need to keep moving through the checkout fields toward the next button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-29.jpg" alt="What the screen showed at step 29, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve reached the city field and it’s already filled, so I should move on to the next field in the form.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/joel/step-30.jpg" alt="What the screen showed at step 30, /cart"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’ve likely tabbed through the form and am on the submit control, so I’ll try activating it.</p></div></li></ol></details></section>
+<section aria-label="Joel, after fix 1"><h4>After fix 1</h4><span class="badge out">Locked out, still stuck after 30 steps</span><blockquote>Last words: I’ll place the order now.</blockquote><p class="where">Ended on <code>/cart</code></p><img class="shot" src="../runs/series-a/20261110-0321-after/joel/step-30.jpg" alt="Joel's screen at the end, /cart">
+      <details><summary>Every step, after fix 1</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to enter the store, so I’ll activate the Go Shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach the shop, so I’ll move to the shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve likely reached the top controls, so I’ll tab once more toward the shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-04.jpg" alt="What the screen showed at step 4, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m likely on the Go Shopping button now, so I’ll activate it to get to the products.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-05.jpg" alt="What the screen showed at step 5, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m still on the home page, so I need to move focus to a product link or button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-06.jpg" alt="What the screen showed at step 6, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on the home page and the Go Shopping button is focused, so I should activate it to get to products.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-07.jpg" alt="What the screen showed at step 7, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m still on the product grid, so I’ll keep tabbing to the next selectable item and use it to open a product page.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-08.jpg" alt="What the screen showed at step 8, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m still on the product grid, so I’ll keep tabbing to the next focusable product link.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-09.jpg" alt="What the screen showed at step 9, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m focused on a product tile now, so I’ll open it and proceed toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-10.jpg" alt="What the screen showed at step 10, /product/1YMWWN1N4O"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to get to cart, so I’ll tab to the cart or checkout control next.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-11.jpg" alt="What the screen showed at step 11, /product/1YMWWN1N4O"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m likely on the Add to Cart area now, so I’ll try activating it to move toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-12.jpg" alt="What the screen showed at step 12, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach a product or shopping link, so I’ll keep tabbing to the next focusable control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-13.jpg" alt="What the screen showed at step 13, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach the shop, so I’ll move to the next focusable item and look for the shopping link or button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-14.jpg" alt="What the screen showed at step 14, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and still need to reach the shop flow, so I’ll move focus to the next element.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-15.jpg" alt="What the screen showed at step 15, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to move to the shop or product list, so I’ll keep tabbing to the next interactive element.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-16.jpg" alt="What the screen showed at step 16, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach a product, so I’ll keep tabbing through the page controls.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-17.jpg" alt="What the screen showed at step 17, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product grid and the first product card looks focused, so I’ll open it to start checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-18.jpg" alt="What the screen showed at step 18, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 3 time(s)</span></p><p class="thought">I’m on the product page and need to get to the cart or checkout controls, so I’ll keep tabbing to the next focusable item.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-19.jpg" alt="What the screen showed at step 19, /product/0PUK6V6EV0"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m likely near the product controls, so I’ll move to the next focusable item to reach the cart or add button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-20.jpg" alt="What the screen showed at step 20, /product/0PUK6V6EV0"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m likely on the Add To Cart button now, so I’ll activate it and move toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-21.jpg" alt="What the screen showed at step 21, /cart"><div><p class="act">type focused element joel@example.com <span class="res">typed into the focused element</span></p><p class="thought">I’m likely on the email field in the shipping address, so I’ll replace the sample address with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-22.jpg" alt="What the screen showed at step 22, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve updated the email, so I’m moving on to the next checkout field or button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-23.jpg" alt="What the screen showed at step 23, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve updated the email, and now I need to move to the next field or checkout control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-24.jpg" alt="What the screen showed at step 24, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve updated the email and I’m continuing through the checkout form with the keyboard.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-25.jpg" alt="What the screen showed at step 25, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 4 time(s)</span></p><p class="thought">I’ve already entered my email, and I need to keep tabbing through the checkout fields toward the submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-26.jpg" alt="What the screen showed at step 26, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve already updated the email, and I’m on the address section, so I’ll tab forward to reach the rest of the checkout fields.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-27.jpg" alt="What the screen showed at step 27, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 6 time(s)</span></p><p class="thought">I'm on the shipping form and the email is already updated, so I should keep tabbing to reach the payment and submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-28.jpg" alt="What the screen showed at step 28, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 3 time(s)</span></p><p class="thought">I’m on the Year field and need to reach the Place Order button, so I’ll tab forward to it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-29.jpg" alt="What the screen showed at step 29, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the checkout buttons and need to submit the order, so I’ll move focus to Place Order first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/joel/step-30.jpg" alt="What the screen showed at step 30, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m at the checkout buttons and need to submit the order, so I’ll move to Place Order.</p></div></li></ol></details></section>
+<section aria-label="Joel, after fix 2"><h4>After fix 2</h4><span class="badge out">Locked out, still stuck after 30 steps</span><blockquote>Last words: I’m going back to the email field now.</blockquote><p class="where">Ended on <code>/cart</code></p><img class="shot" src="../runs/series-a/20261110-0327-after2/joel/step-30.jpg" alt="Joel's screen at the end, /cart">
+      <details><summary>Every step, after fix 2</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to start shopping, so I’ll tab to the main button and open the store.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach the shop entry, so I’ll tab to the Go Shopping button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach the shopping flow, so I’ll tab forward to the main button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-04.jpg" alt="What the screen showed at step 4, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on the Go Shopping button and can enter the store now.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-05.jpg" alt="What the screen showed at step 5, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to get into a product, so I’ll move focus to the next selectable item and open it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-06.jpg" alt="What the screen showed at step 6, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the home page and need to reach a product, so I’ll keep tabbing until I find a shop or product link.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-07.jpg" alt="What the screen showed at step 7, /"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product grid and need to get into a product page, so I’ll move focus to the next item and see what’s active.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-08.jpg" alt="What the screen showed at step 8, /"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m on a product card now, so I’ll open this telescope to buy it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-09.jpg" alt="What the screen showed at step 9, /product/1YMWWN1N4O"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to get the item into the cart, so I’ll move to the Add to Cart button and press it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-10.jpg" alt="What the screen showed at step 10, /product/1YMWWN1N4O"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and likely need to reach the cart next, so I’ll tab forward to the next control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-11.jpg" alt="What the screen showed at step 11, /product/1YMWWN1N4O"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I think the cart button is focused now, so I’ll open it to get to checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-12.jpg" alt="What the screen showed at step 12, /product/1YMWWN1N4O"><div><p class="act">press Escape Escape <span class="res">pressed Escape 1 time(s)</span></p><p class="thought">I’m in the currency menu already, so I’ll close it and keep moving toward the cart.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-13.jpg" alt="What the screen showed at step 13, /product/1YMWWN1N4O"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m back on the product page and need to get to the Add to Cart button, so I’ll move focus forward once.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-14.jpg" alt="What the screen showed at step 14, /product/1YMWWN1N4O"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m likely on the product controls, so I’ll activate the focused button to add the telescope to the cart.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-15.jpg" alt="What the screen showed at step 15, /product/1YMWWN1N4O"><div><p class="act">press Escape Escape <span class="res">pressed Escape 1 time(s)</span></p><p class="thought">The quantity dropdown is open, so I need to close it and move to the Add To Cart button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-16.jpg" alt="What the screen showed at step 16, /product/1YMWWN1N4O"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the product page and need to reach the Add to Cart button, so I’ll tab forward from the quantity control.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-17.jpg" alt="What the screen showed at step 17, /product/1YMWWN1N4O"><div><p class="act">press Enter Enter <span class="res">pressed Enter 1 time(s)</span></p><p class="thought">I’m likely on the Add to Cart button now, so I’ll activate it to move toward checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-18.jpg" alt="What the screen showed at step 18, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I see the shipping address section and need to reach the email field to replace it with joel@example.com.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-19.jpg" alt="What the screen showed at step 19, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m near the shipping form, so I’ll tab to the email field and edit it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-20.jpg" alt="What the screen showed at step 20, /cart"><div><p class="act">type focused element joel@example.com <span class="res">typed into the focused element</span></p><p class="thought">I’m likely on the email field in the shipping address section, so I’ll replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-21.jpg" alt="What the screen showed at step 21, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve already updated the email, so I need to move on through the checkout fields toward the submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-22.jpg" alt="What the screen showed at step 22, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve updated the email, and I need to move to the next field in the shipping form.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-23.jpg" alt="What the screen showed at step 23, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve already updated the email, and I need to keep moving through the checkout fields toward the submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-24.jpg" alt="What the screen showed at step 24, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve already updated the email, and I need to keep tabbing through the remaining checkout fields.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-25.jpg" alt="What the screen showed at step 25, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’ve updated the email and need to move through the remaining checkout fields to reach the next step.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-26.jpg" alt="What the screen showed at step 26, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I’m on the street address field, so I’ll move forward through the form to keep the existing details and reach checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-27.jpg" alt="What the screen showed at step 27, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 6 time(s)</span></p><p class="thought">I’ve already fixed the email, and I just need to move through the remaining checkout fields without changing them.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-28.jpg" alt="What the screen showed at step 28, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 2 time(s)</span></p><p class="thought">I’m on the year field now, so I need to move forward toward the Place Order button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-29.jpg" alt="What the screen showed at step 29, /cart"><div><p class="act">press Tab Tab <span class="res">pressed Tab 1 time(s)</span></p><p class="thought">I see the Continue Shopping button focused, so I’ll move to Place Order and submit.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/joel/step-30.jpg" alt="What the screen showed at step 30, /cart"><div><p class="act">press Shift+Tab Shift+Tab <span class="res">pressed Shift+Tab 15 time(s)</span></p><p class="thought">I’m at the bottom buttons, so I need to move back up to the email field and edit it before placing the order.</p></div></li></ol></details></section>
+  </div>
+</article>
+<article class="shopper" id="maya">
+  <header><span class="avatar" aria-hidden="true">M</span><div><h3>Maya</h3><p class="need">Blind, screen reader</p></div></header>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+<section aria-label="Maya, before"><h4>Before</h4><span class="badge in">Got in, bought in 4 steps</span><img class="shot" src="../runs/series-a/20261110-0314-before/maya/final.jpg" alt="Maya's screen at the end, /cart/checkout/fb93a522-dcb4-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, before</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/maya/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">activate e38  <span class="res">activated</span></p><p class="thought">I’m on the home page and need to pick a product first, so I’ll open a telescope product from the list.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/maya/step-02.jpg" alt="What the screen showed at step 2, /product/1YMWWN1N4O"><div><p class="act">activate e136  <span class="res">activated</span></p><p class="thought">I’m on the product page, so I should add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/maya/step-03.jpg" alt="What the screen showed at step 3, /cart"><div><p class="act">type e236 maya@example.com <span class="res">typed</span></p><p class="thought">I’m on the cart page and the email field is visible, so I’ll update it first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/maya/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">activate e273  <span class="res">activated</span></p><p class="thought">I’ve updated the email, and the next step is to submit the order.</p></div></li></ol></details></section>
+<section aria-label="Maya, after fix 1"><h4>After fix 1</h4><span class="badge in">Got in, bought in 4 steps</span><img class="shot" src="../runs/series-a/20261110-0321-after/maya/final.jpg" alt="Maya's screen at the end, /cart/checkout/e23fe06b-dcb5-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 1</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/maya/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">activate e37  <span class="res">activated</span></p><p class="thought">I’m on the home page, so I’ll open a product to add it to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/maya/step-02.jpg" alt="What the screen showed at step 2, /product/1YMWWN1N4O"><div><p class="act">activate e135  <span class="res">activated</span></p><p class="thought">I’m on the product page, so I’ll add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/maya/step-03.jpg" alt="What the screen showed at step 3, /cart"><div><p class="act">type e234 maya@example.com <span class="res">typed</span></p><p class="thought">I’m on the cart checkout form, so I’ll update the email field first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/maya/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">activate e260  <span class="res">activated</span></p><p class="thought">The email is already updated, so I just need to submit the order.</p></div></li></ol></details></section>
+<section aria-label="Maya, after fix 2"><h4>After fix 2</h4><span class="badge in">Got in, bought in 4 steps</span><img class="shot" src="../runs/series-a/20261110-0327-after2/maya/final.jpg" alt="Maya's screen at the end, /cart/checkout/b79c1811-dcb6-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 2</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/maya/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">activate e37  <span class="res">activated</span></p><p class="thought">I’m on the home page, so I’ll open a product and add it to the cart to start checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/maya/step-02.jpg" alt="What the screen showed at step 2, /product/1YMWWN1N4O"><div><p class="act">activate e135  <span class="res">activated</span></p><p class="thought">I’m on the product page and need to add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/maya/step-03.jpg" alt="What the screen showed at step 3, /cart"><div><p class="act">type e234 maya@example.com <span class="res">typed</span></p><p class="thought">I’m on the cart checkout form, and the email field is already available, so I should update it first before placing the order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/maya/step-04.jpg" alt="What the screen showed at step 4, /cart"><div><p class="act">activate e261  <span class="res">activated</span></p><p class="thought">The email is already set correctly, and the form looks ready to submit, so I’ll place the order now.</p></div></li></ol></details></section>
+  </div>
+</article>
+<article class="shopper" id="ines">
+  <header><span class="avatar" aria-hidden="true">I</span><div><h3>Ines</h3><p class="need">Low vision, 200% zoom</p></div></header>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+<section aria-label="Ines, before"><h4>Before</h4><span class="badge in">Got in, bought in 13 steps</span><img class="shot" src="../runs/series-a/20261110-0314-before/ines/final.jpg" alt="Ines's screen at the end, /cart/checkout/0f00c0f0-dcb5-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, before</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the home page and need to find a product, so I’ll scroll down to the product listings.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I only see the home hero image, so I need to scroll to find products or a shop section.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">click a &quot;Solar System Color Imager $ 175.00&quot;  <span class="res">clicked</span></p><p class="thought">I see a product link, so I’ll open it and get into the shop flow.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-04.jpg" alt="What the screen showed at step 4, /product/0PUK6V6EV0"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the product page and the purchase button is likely lower down, so I’ll scroll to find add-to-cart or checkout controls.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-05.jpg" alt="What the screen showed at step 5, /product/0PUK6V6EV0"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m at the product page and the Add To Cart button is visible, so I’ll add this item to the cart.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I see the cart item and need to look lower for checkout or a form.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the cart page and need to get to checkout, so I’ll scroll for the checkout section or button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I see the email field already filled, so I’ll replace it with mine and keep the rest unchanged.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; ines@example.com <span class="res">typed</span></p><p class="thought">I’m on the email field now, so I’ll replace it with my address and keep the rest unchanged.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-10.jpg" alt="What the screen showed at step 10, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already set the email, so I need to keep going through the checkout form.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-11.jpg" alt="What the screen showed at step 11, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m at the address fields, and the email was already changed, so I should scroll to the next part of checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-12.jpg" alt="What the screen showed at step 12, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already changed the email, so I need to find the submit button below this payment section.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/ines/step-13.jpg" alt="What the screen showed at step 13, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I see the payment fields already filled, so I’m ready to submit the order.</p></div></li></ol></details></section>
+<section aria-label="Ines, after fix 1"><h4>After fix 1</h4><span class="badge in">Got in, bought in 12 steps</span><img class="shot" src="../runs/series-a/20261110-0321-after/ines/final.jpg" alt="Ines's screen at the end, /cart/checkout/f24ba4d2-dcb5-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 1</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the home page, so I need to find a product first and scroll to the catalog.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I only see the top hero image, so I need to scroll to find a product to buy.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">click a &quot;Solar System Color Imager $ 175.00&quot;  <span class="res">clicked</span></p><p class="thought">I see a product link, and I need to pick one item to buy, so I’ll open it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-04.jpg" alt="What the screen showed at step 4, /product/0PUK6V6EV0"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the product page and the add-to-cart area is likely below, so I need to scroll down a bit.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-05.jpg" alt="What the screen showed at step 5, /product/0PUK6V6EV0"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to add this item to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the cart page and need to find the checkout button, so I’ll scroll down a bit to see the rest of the cart.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the cart and need to find the checkout button, so I’ll scroll further down.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I see the email field and need to replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; ines@example.com <span class="res">typed</span></p><p class="thought">I’m on the email field, so I’ll replace the sample address with mine and keep the other fields unchanged.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-10.jpg" alt="What the screen showed at step 10, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve updated the email, and I need to see the rest of the checkout form to continue without changing the other sample details.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-11.jpg" alt="What the screen showed at step 11, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already fixed the email, and I need to keep moving through checkout to payment.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/ines/step-12.jpg" alt="What the screen showed at step 12, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve already updated the email, and this screen is ready to submit, so I’ll place the order now.</p></div></li></ol></details></section>
+<section aria-label="Ines, after fix 2"><h4>After fix 2</h4><span class="badge in">Got in, bought in 12 steps</span><img class="shot" src="../runs/series-a/20261110-0327-after2/ines/final.jpg" alt="Ines's screen at the end, /cart/checkout/c8141630-dcb6-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 2</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the home page and need to find a product to add, so I’ll scroll down to the product listings.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I only see the hero image, so I need to scroll to find the shop content and products.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-03.jpg" alt="What the screen showed at step 3, /"><div><p class="act">click a &quot;Solar System Color Imager $ 175.00&quot;  <span class="res">clicked</span></p><p class="thought">I see a product card, so I’ll open it to start buying one item.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-04.jpg" alt="What the screen showed at step 4, /product/0PUK6V6EV0"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the product page and need to find the add-to-cart button below, so I’ll scroll down a bit.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-05.jpg" alt="What the screen showed at step 5, /product/0PUK6V6EV0"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I see the quantity and the Add To Cart button, so I’ll add this item to the cart now.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the cart page with the item added, so I need to find the checkout button further down.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’m on the cart page and need to move toward checkout, so I’ll scroll to find the checkout button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I see the email field and need to replace the sample address with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; ines@example.com <span class="res">typed</span></p><p class="thought">I’m on the email field, so I’ll replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-10.jpg" alt="What the screen showed at step 10, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already fixed the email, and I need to reach the rest of the checkout form, so I’ll scroll down.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-11.jpg" alt="What the screen showed at step 11, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already updated the email, and I need to find the rest of checkout below this section.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/ines/step-12.jpg" alt="What the screen showed at step 12, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve reached the payment section and the email is already updated, so I can place the order now.</p></div></li></ol></details></section>
+  </div>
+</article>
+<article class="shopper" id="kofi">
+  <header><span class="avatar" aria-hidden="true">K</span><div><h3>Kofi</h3><p class="need">Cheap phone, slow network</p></div></header>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr)">
+<section aria-label="Kofi, before"><h4>Before</h4><span class="badge out">Locked out, still stuck after 20 steps</span><blockquote>Last words: I’ll open the telescope.</blockquote><p class="where">Ended on <code>/product/66VCHSJNUP</code></p><p class="note">His order did go through. The shop's email service logged an order confirmation at 03:16:56 UTC, just before his Place Order step was written down (email-service.log in this round). His phone showed &quot;Your shopping cart is empty!&quot; and no confirmation, so he thought it failed and went back to shopping.</p><img class="shot" src="../runs/series-a/20261110-0314-before/kofi/step-20.jpg" alt="Kofi's screen at the end, /product/66VCHSJNUP">
+      <details><summary>Every step, before</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click button[submit] &quot;Go Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the home page, so I’ll go into the shop first to pick a telescope.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the product list, and I’ll open a telescope to buy.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to put this telescope in the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-04.jpg" alt="What the screen showed at step 4, /product/1YMWWN1N4O"><div><p class="act">click a &quot;1&quot;  <span class="res">clicked</span></p><p class="thought">I’ve added the telescope, so now I should open the cart to check out.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">click a &quot;Cart icon&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the cart page, and the cart icon should show my item, so I’ll open it first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">click button[submit] &quot;Go to Shopping Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the cart page and need to continue toward checkout, so I’ll open the cart summary now.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">click button[submit] &quot;Go to Shopping Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the cart page and need to continue to checkout, so I’ll tap the cart button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">click button[submit] &quot;Go to Shopping Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m at the cart screen and need to move forward, so I’ll tap the cart button again if needed.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">click button[submit] &quot;Go to Shopping Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m still on the cart overlay, so I’ll tap the main cart button again to move on.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-10.jpg" alt="What the screen showed at step 10, /cart"><div><p class="act">click_text text &quot;Close&quot; Close <span class="res">clicked</span></p><p class="thought">I’m still on the cart overlay, so I should close it to get to checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-11.jpg" alt="What the screen showed at step 11, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I need to replace the sample email with Kofi's email before continuing.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-12.jpg" alt="What the screen showed at step 12, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; kofi@example.com <span class="res">typed</span></p><p class="thought">I see the email field is active, so I’ll replace the sample address with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-13.jpg" alt="What the screen showed at step 13, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already fixed the email, so I need to keep going down the checkout form to reach the next fields or submit button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-14.jpg" alt="What the screen showed at step 14, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already updated the email, so I need to keep going down to the payment and place order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-15.jpg" alt="What the screen showed at step 15, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve got the payment details filled in, so I’m ready to submit the order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-16.jpg" alt="What the screen showed at step 16, /cart"><div><p class="act">click button[submit] &quot;Continue Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the empty cart page, so I need to go back to the shop and add a telescope item before checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-17.jpg" alt="What the screen showed at step 17, /"><div><p class="act">done   <span class="res">done</span></p><p class="thought">I already placed the order and returned to the home page, so I’m done.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-18.jpg" alt="What the screen showed at step 18, /"><div><p class="act">click a &quot;Cart icon&quot;  <span class="res">clicked</span></p><p class="thought">I need to get back to the cart to see if the order actually went through or if I need to finish it there.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-19.jpg" alt="What the screen showed at step 19, /"><div><p class="act">click button[submit] &quot;Go to Shopping Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the home page and the cart button should take me back to checkout flow, so I’ll open the cart again.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0314-before/kofi/step-20.jpg" alt="What the screen showed at step 20, /cart"><div><p class="act">click a &quot;Starsense Explorer Refractor Telescope $ 349.95&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the cart page, and I need to pick a product to buy, so I’ll open the telescope item.</p></div></li></ol></details></section>
+<section aria-label="Kofi, after fix 1"><h4>After fix 1</h4><span class="badge in">Got in, bought in 9 steps</span><img class="shot" src="../runs/series-a/20261110-0321-after/kofi/final.jpg" alt="Kofi's screen at the end, /cart/checkout/04806a88-dcb6-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 1</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click button[submit] &quot;Go Shopping&quot;  <span class="res">clicked</span></p><p class="thought">I see the shop entry points, and I should start browsing products by tapping Go Shopping.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the product list, and I’ll open the cheaper telescope to buy it.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page, so I should add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-04.jpg" alt="What the screen showed at step 4, /product/1YMWWN1N4O"><div><p class="act">click a &quot;1&quot;  <span class="res">clicked</span></p><p class="thought">I’ve added the telescope, so now I need to open the cart to go to checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; kofi@example.com <span class="res">typed</span></p><p class="thought">I’m at the shipping address form, and I just need to replace the sample email with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already fixed the email, and I need to scroll to the rest of the checkout fields and place the order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve already set the email, so I need to keep going down the form to find the remaining checkout fields and the final place order button.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">The checkout form is filled, so I just need to submit the order now.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0321-after/kofi/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">I’ve filled the payment details already, so I’ll submit the order now.</p></div></li></ol></details></section>
+<section aria-label="Kofi, after fix 2"><h4>After fix 2</h4><span class="badge in">Got in, bought in 10 steps</span><img class="shot" src="../runs/series-a/20261110-0327-after2/kofi/final.jpg" alt="Kofi's screen at the end, /cart/checkout/de58065e-dcb6-11f1-a1b1-8e234a8ce210">
+      <details><summary>Every step, after fix 2</summary><ol class="trail"><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-01.jpg" alt="What the screen showed at step 1, /"><div><p class="act">click_text  Eclipsmart Travel Refractor Telescope $ 129.95 <span class="res">did not work: locator.tap: Timeout 6000ms exceeded.</span></p><p class="thought">I see hot products, so I’ll open one to add it to the cart.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-02.jpg" alt="What the screen showed at step 2, /"><div><p class="act">click a &quot;Eclipsmart Travel Refractor Telescope $ 129.95&quot;  <span class="res">clicked</span></p><p class="thought">I see the telescope product on the home page, so I’ll open that item directly instead of the button that failed.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-03.jpg" alt="What the screen showed at step 3, /product/1YMWWN1N4O"><div><p class="act">click button[submit] &quot;Add To Cart&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the product page and need to add this telescope to the cart first.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-04.jpg" alt="What the screen showed at step 4, /product/1YMWWN1N4O"><div><p class="act">click a &quot;1&quot;  <span class="res">clicked</span></p><p class="thought">I’ve added the product, so now I need to open the cart to start checkout.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-05.jpg" alt="What the screen showed at step 5, /cart"><div><p class="act">click input[email] &quot;someone@example.com&quot;  <span class="res">clicked</span></p><p class="thought">I’m on the cart page and the email field is visible, so I’ll replace it with my email now.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-06.jpg" alt="What the screen showed at step 6, /cart"><div><p class="act">type input[email] &quot;someone@example.com&quot; kofi@example.com <span class="res">typed</span></p><p class="thought">I’m in the email field, so I’ll replace the sample address with mine.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-07.jpg" alt="What the screen showed at step 7, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve updated the email, and I need to scroll down to find the rest of the checkout and place the order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-08.jpg" alt="What the screen showed at step 8, /cart"><div><p class="act">scroll_down   <span class="res">scrolled</span></p><p class="thought">I’ve changed the email, and I need to keep going to the rest of the checkout fields below.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-09.jpg" alt="What the screen showed at step 9, /cart"><div><p class="act">click button[submit] &quot;Place Order&quot;  <span class="res">clicked</span></p><p class="thought">The checkout form is filled out, and I only needed to change the email, so I’m ready to submit the order.</p></div></li><li><img loading="lazy" src="../runs/series-a/20261110-0327-after2/kofi/step-10.jpg" alt="What the screen showed at step 10, /cart"><div><p class="act">done   <span class="res">done</span></p><p class="thought">The order is complete, so I can finish now.</p></div></li></ol></details></section>
+  </div>
+</article>
+<h2 id="fix">The fixes</h2>
+<div class="box" style="margin-bottom:16px"><h3 id="fix-1">Fix 1, made from the before round</h3><p>Fix keyboard-visible focus, make the checkout submit button reachable before the secondary shopping link, prevent the cart from flashing to an empty-cart state during slow order submission, and add non-visual accessible names/labels for controls that shoppers use in the purchase path.</p><ul><li><code>components/Button/Button.tsx</code>: This restores a visible keyboard focus indicator on buttons such as Add To Cart and Place Order. <span class="helps">For Joel</span></li><li><code>components/CheckoutForm/CheckoutForm.styled.ts</code>: This lets the submit button come first in keyboard order while preserving the same visual button order for mouse users. <span class="helps">For Joel</span></li><li><code>components/CheckoutForm/CheckoutForm.tsx</code>: This makes tabbing after the final payment field land on Place Order instead of the secondary Continue Shopping control. <span class="helps">For Joel</span></li><li><code>components/Input/Input.styled.ts</code>: This restores a visible keyboard focus indicator on checkout text fields. <span class="helps">For Joel</span></li><li><code>components/Input/Input.styled.ts</code>: This turns visual checkout field labels into real programmatic labels. <span class="helps">For Joel</span></li><li><code>components/Input/Input.styled.ts</code>: This restores a visible keyboard focus indicator on checkout select fields. <span class="helps">For Joel</span></li><li><code>components/Input/Input.tsx</code>: This associates each checkout label with its corresponding input or select. <span class="helps">For Joel</span></li><li><code>pages/cart/index.tsx</code>: This prepares the cart page to keep the checkout view stable while an order is being placed. <span class="helps">For Kofi</span></li><li><code>pages/cart/index.tsx</code>: This tracks a pending order submission so slow devices are not shown an empty cart before navigation completes. <span class="helps">For Kofi</span></li><li><code>pages/cart/index.tsx</code>: This prevents the empty-cart page from replacing checkout during a slow order submission. <span class="helps">For Kofi</span></li><li><code>components/Cart/CartDetail.tsx</code>: This lets the cart page know when checkout submission has started. <span class="helps">For Kofi</span></li><li><code>components/Cart/CartDetail.tsx</code>: This marks checkout as pending before the cart can be emptied and restores normal state only if submission fails. <span class="helps">For Kofi</span></li><li><code>components/Cart/CartDetail.tsx</code>: This keeps the order submission callback up to date with the pending-state handler. <span class="helps">For Kofi</span></li><li><code>components/CurrencySwitcher/CurrencySwitcher.tsx</code>: This gives the currency selector an accessible name without changing its visual design. <span class="helps">For Joel</span></li><li><code>pages/product/[productId]/index.tsx</code>: This gives the product quantity selector an accessible name for keyboard and assistive technology users. <span class="helps">For Joel</span></li><li><code>components/CartItems/CartItem.tsx</code>: This gives cart quantity selectors accessible names tied to their products. <span class="helps">For Joel</span></li><li><code>components/Header/Header.styled.ts</code>: This gives the header home link discernible text through the logo image alt text. <span class="helps">For Joel</span></li><li><code>components/Banner/Banner.styled.ts</code>: This marks the decorative banner image so it does not create an unlabeled image stop. <span class="helps">For Joel</span></li><li><code>pages/_document.tsx</code>: This identifies the page language for assistive technology. <span class="helps">For Joel</span></li></ul><p>Shop frontend rebuilt with it: <strong>passed in 72 s</strong>.</p><pre class="diff" tabindex="0" aria-label="Patch 1"><span class="">diff --git a/src/frontend/components/Banner/Banner.styled.ts b/src/frontend/components/Banner/Banner.styled.ts</span>
+<span class="">index 6aa7d62..1983555 100644</span>
+<span class="meta">--- a/src/frontend/components/Banner/Banner.styled.ts</span>
+<span class="meta">+++ b/src/frontend/components/Banner/Banner.styled.ts</span>
+<span class="meta">@@ -17,6 +17,7 @@ export const Banner = styled.div`</span>
+<span class=""> </span>
+<span class=""> export const BannerImg = styled.img.attrs({</span>
+<span class="">   src: '/images/Banner.png',</span>
+<span class="add">+  alt: '',</span>
+<span class=""> })`</span>
+<span class="">   width: 100%;</span>
+<span class="">   height: auto;</span>
+<span class="">diff --git a/src/frontend/components/Button/Button.tsx b/src/frontend/components/Button/Button.tsx</span>
+<span class="">index 0807750..fe610fb 100644</span>
+<span class="meta">--- a/src/frontend/components/Button/Button.tsx</span>
+<span class="meta">+++ b/src/frontend/components/Button/Button.tsx</span>
+<span class="meta">@@ -17,6 +17,11 @@ const Button = styled.button&lt;{ $type?: 'primary' | 'secondary' | 'link' }&gt;`</span>
+<span class="">   height: 62px;</span>
+<span class="">   cursor: pointer;</span>
+<span class=""> </span>
+<span class="add">+  &amp;:focus-visible {</span>
+<span class="add">+    outline: 3px solid #29293E;</span>
+<span class="add">+    outline-offset: 3px;</span>
+<span class="add">+  }</span>
+<span class="add">+</span>
+<span class="">   ${({ $type = 'primary' }) =&gt;</span>
+<span class="">     $type === 'secondary' &amp;&amp;</span>
+<span class="">     css`</span>
+<span class="">diff --git a/src/frontend/components/Cart/CartDetail.tsx b/src/frontend/components/Cart/CartDetail.tsx</span>
+<span class="">index 4d777e4..0a161cc 100644</span>
+<span class="meta">--- a/src/frontend/components/Cart/CartDetail.tsx</span>
+<span class="meta">+++ b/src/frontend/components/Cart/CartDetail.tsx</span>
+<span class="meta">@@ -13,7 +13,11 @@ import * as S from '../../styles/Cart.styled';</span>
+<span class=""> </span>
+<span class=""> const { userId } = SessionGateway.getSession();</span>
+<span class=""> </span>
+<span class="del">-const CartDetail = () =&gt; {</span>
+<span class="add">+interface IProps {</span>
+<span class="add">+  onPlacingOrderChange?(isPlacingOrder: boolean): void;</span>
+<span class="add">+}</span>
+<span class="add">+</span>
+<span class="add">+const CartDetail = ({ onPlacingOrderChange }: IProps) =&gt; {</span>
+<span class="">   const {</span>
+<span class="">     cart: { items },</span>
+<span class="">     emptyCart,</span>
+<span class="meta">@@ -35,31 +39,38 @@ const CartDetail = () =&gt; {</span>
+<span class="">       creditCardExpirationYear,</span>
+<span class="">       creditCardNumber,</span>
+<span class="">     }: IFormData) =&gt; {</span>
+<span class="del">-      const order = await placeOrder({</span>
+<span class="del">-        userId,</span>
+<span class="del">-        email,</span>
+<span class="del">-        address: {</span>
+<span class="del">-          streetAddress,</span>
+<span class="del">-          state,</span>
+<span class="del">-          country,</span>
+<span class="del">-          city,</span>
+<span class="del">-          zipCode,</span>
+<span class="del">-        },</span>
+<span class="del">-        userCurrency: selectedCurrency,</span>
+<span class="del">-        creditCard: {</span>
+<span class="del">-          creditCardCvv,</span>
+<span class="del">-          creditCardExpirationMonth,</span>
+<span class="del">-          creditCardExpirationYear,</span>
+<span class="del">-          creditCardNumber,</span>
+<span class="del">-        },</span>
+<span class="del">-      });</span>
+<span class="add">+      onPlacingOrderChange?.(true);</span>
+<span class="add">+</span>
+<span class="add">+      try {</span>
+<span class="add">+        const order = await placeOrder({</span>
+<span class="add">+          userId,</span>
+<span class="add">+          email,</span>
+<span class="add">+          address: {</span>
+<span class="add">+            streetAddress,</span>
+<span class="add">+            state,</span>
+<span class="add">+            country,</span>
+<span class="add">+            city,</span>
+<span class="add">+            zipCode,</span>
+<span class="add">+          },</span>
+<span class="add">+          userCurrency: selectedCurrency,</span>
+<span class="add">+          creditCard: {</span>
+<span class="add">+            creditCardCvv,</span>
+<span class="add">+            creditCardExpirationMonth,</span>
+<span class="add">+            creditCardExpirationYear,</span>
+<span class="add">+            creditCardNumber,</span>
+<span class="add">+          },</span>
+<span class="add">+        });</span>
+<span class=""> </span>
+<span class="del">-      push({</span>
+<span class="del">-        pathname: `/cart/checkout/${order.orderId}`,</span>
+<span class="del">-        query: { order: JSON.stringify(order) },</span>
+<span class="del">-      });</span>
+<span class="add">+        push({</span>
+<span class="add">+          pathname: `/cart/checkout/${order.orderId}`,</span>
+<span class="add">+          query: { order: JSON.stringify(order) },</span>
+<span class="add">+        });</span>
+<span class="add">+      } catch (error) {</span>
+<span class="add">+        onPlacingOrderChange?.(false);</span>
+<span class="add">+        throw error;</span>
+<span class="add">+      }</span>
+<span class="">     },</span>
+<span class="del">-    [placeOrder, push, selectedCurrency]</span>
+<span class="add">+    [onPlacingOrderChange, placeOrder, push, selectedCurrency]</span>
+<span class="">   );</span>
+<span class=""> </span>
+<span class="">   return (</span>
+<span class="">diff --git a/src/frontend/components/CartItems/CartItem.tsx b/src/frontend/components/CartItems/CartItem.tsx</span>
+<span class="">index 3110980..c2a8a16 100644</span>
+<span class="meta">--- a/src/frontend/components/CartItems/CartItem.tsx</span>
+<span class="meta">+++ b/src/frontend/components/CartItems/CartItem.tsx</span>
+<span class="meta">@@ -36,7 +36,7 @@ const CartItem = ({</span>
+<span class="">         &lt;/S.NameContainer&gt;</span>
+<span class="">       &lt;/Link&gt;</span>
+<span class="">       &lt;S.CartItemDetails&gt;</span>
+<span class="del">-        &lt;Select value={quantity} onChange={e =&gt; onQuantityChange(id, +e.target.value)}&gt;</span>
+<span class="add">+        &lt;Select value={quantity} aria-label={`Quantity for ${name}`} onChange={e =&gt; onQuantityChange(id, +e.target.value)}&gt;</span>
+<span class="">           {quantityOptions.map(o =&gt; (</span>
+<span class="">             &lt;option key={o} value={o}&gt;{o}&lt;/option&gt;</span>
+<span class="">           ))}</span>
+<span class="">diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="">index c11ebc5..748eea8 100644</span>
+<span class="meta">--- a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="meta">+++ b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="meta">@@ -28,13 +28,21 @@ export const SubmitContainer = styled.div`</span>
+<span class="">   justify-content: center;</span>
+<span class="">   align-items: center;</span>
+<span class="">   gap: 20px;</span>
+<span class="del">-  flex-direction: column-reverse;</span>
+<span class="add">+  flex-direction: column;</span>
+<span class=""> </span>
+<span class="">   ${({ theme }) =&gt; theme.breakpoints.desktop} {</span>
+<span class="">     flex-direction: row;</span>
+<span class="">     justify-content: end;</span>
+<span class="">     align-items: center;</span>
+<span class="">     margin-top: 67px;</span>
+<span class="add">+</span>
+<span class="add">+    &gt; :first-child {</span>
+<span class="add">+      order: 2;</span>
+<span class="add">+    }</span>
+<span class="add">+</span>
+<span class="add">+    &gt; :last-child {</span>
+<span class="add">+      order: 1;</span>
+<span class="add">+    }</span>
+<span class="">   }</span>
+<span class=""> `;</span>
+<span class=""> </span>
+<span class="">diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.tsx b/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="">index 1c8e5c9..ac48d5b 100644</span>
+<span class="meta">--- a/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="meta">+++ b/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="meta">@@ -190,10 +190,10 @@ const CheckoutForm = ({ onSubmit }: IProps) =&gt; {</span>
+<span class="">       &lt;/S.CardRow&gt;</span>
+<span class=""> </span>
+<span class="">       &lt;S.SubmitContainer&gt;</span>
+<span class="add">+        &lt;S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=&quot;submit&quot;&gt;Place Order&lt;/S.CartButton&gt;</span>
+<span class="">         &lt;Link href=&quot;/&quot;&gt;</span>
+<span class="del">-          &lt;S.CartButton $type=&quot;secondary&quot;&gt;Continue Shopping&lt;/S.CartButton&gt;</span>
+<span class="add">+          &lt;S.CartButton $type=&quot;secondary&quot; type=&quot;button&quot;&gt;Continue Shopping&lt;/S.CartButton&gt;</span>
+<span class="">         &lt;/Link&gt;</span>
+<span class="del">-        &lt;S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=&quot;submit&quot;&gt;Place Order&lt;/S.CartButton&gt;</span>
+<span class="">       &lt;/S.SubmitContainer&gt;</span>
+<span class="">     &lt;/S.CheckoutForm&gt;</span>
+<span class="">   );</span>
+<span class="">diff --git a/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx b/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx</span>
+<span class="">index 0e3b174..35fd96c 100644</span>
+<span class="meta">--- a/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx</span>
+<span class="meta">+++ b/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx</span>
+<span class="meta">@@ -18,6 +18,7 @@ const CurrencySwitcher = () =&gt; {</span>
+<span class="">         &lt;S.SelectedConcurrency&gt;{currencySymbol}&lt;/S.SelectedConcurrency&gt;</span>
+<span class="">         &lt;S.Select</span>
+<span class="">           name=&quot;currency_code&quot;</span>
+<span class="add">+          aria-label=&quot;Currency&quot;</span>
+<span class="">           onChange={(event: { target: { value: string; }; }) =&gt; setSelectedCurrency(event.target.value)}</span>
+<span class="">           value={selectedCurrency}</span>
+<span class="">           data-cy={CypressFields.CurrencySwitcher}</span>
+<span class="">diff --git a/src/frontend/components/Header/Header.styled.ts b/src/frontend/components/Header/Header.styled.ts</span>
+<span class="">index 39d6240..353ae91 100644</span>
+<span class="meta">--- a/src/frontend/components/Header/Header.styled.ts</span>
+<span class="meta">+++ b/src/frontend/components/Header/Header.styled.ts</span>
+<span class="meta">@@ -44,6 +44,7 @@ export const NavBarBrand = styled(Link)`</span>
+<span class=""> </span>
+<span class=""> export const BrandImg = styled.img.attrs({</span>
+<span class="">   src: '/images/opentelemetry-demo-logo.png',</span>
+<span class="add">+  alt: 'OpenTelemetry Demo home',</span>
+<span class=""> })`</span>
+<span class="">   width: 280px;</span>
+<span class="">   height: auto;</span>
+<span class="">diff --git a/src/frontend/components/Input/Input.styled.ts b/src/frontend/components/Input/Input.styled.ts</span>
+<span class="">index d2078d1..fcfefdd 100644</span>
+<span class="meta">--- a/src/frontend/components/Input/Input.styled.ts</span>
+<span class="meta">+++ b/src/frontend/components/Input/Input.styled.ts</span>
+<span class="meta">@@ -15,9 +15,14 @@ export const Input = styled.input`</span>
+<span class="">   border-radius: 10px;</span>
+<span class="">   background: #f9f9f9;</span>
+<span class="">   border: 1px solid #cacaca;</span>
+<span class="add">+</span>
+<span class="add">+  &amp;:focus-visible {</span>
+<span class="add">+    outline: 3px solid #29293E;</span>
+<span class="add">+    outline-offset: 2px;</span>
+<span class="add">+  }</span>
+<span class=""> `;</span>
+<span class=""> </span>
+<span class="del">-export const InputLabel = styled.p`</span>
+<span class="add">+export const InputLabel = styled.label`</span>
+<span class="">   font-size: ${({ theme }) =&gt; theme.sizes.dMedium};</span>
+<span class="">   font-weight: ${({ theme }) =&gt; theme.fonts.semiBold};</span>
+<span class="">   margin: 0;</span>
+<span class="meta">@@ -35,6 +40,11 @@ export const Select = styled.select`</span>
+<span class="">   border-radius: 10px;</span>
+<span class="">   background: #f9f9f9;</span>
+<span class="">   border: 1px solid #cacaca;</span>
+<span class="add">+</span>
+<span class="add">+  &amp;:focus-visible {</span>
+<span class="add">+    outline: 3px solid #29293E;</span>
+<span class="add">+    outline-offset: 2px;</span>
+<span class="add">+  }</span>
+<span class=""> `;</span>
+<span class=""> </span>
+<span class=""> export const InputRow = styled.div`</span>
+<span class="">diff --git a/src/frontend/components/Input/Input.tsx b/src/frontend/components/Input/Input.tsx</span>
+<span class="">index 14782b0..840e14d 100644</span>
+<span class="meta">--- a/src/frontend/components/Input/Input.tsx</span>
+<span class="meta">+++ b/src/frontend/components/Input/Input.tsx</span>
+<span class="meta">@@ -13,7 +13,7 @@ interface IProps extends InputHTMLAttributes&lt;HTMLSelectElement | HTMLInputElemen</span>
+<span class=""> const Input = ({ type, id = '', children, label, ...props }: IProps) =&gt; {</span>
+<span class="">   return (</span>
+<span class="">     &lt;S.InputRow&gt;</span>
+<span class="del">-      &lt;S.InputLabel&gt;{label}&lt;/S.InputLabel&gt;</span>
+<span class="add">+      &lt;S.InputLabel htmlFor={id}&gt;{label}&lt;/S.InputLabel&gt;</span>
+<span class="">       {type === 'select' ? (</span>
+<span class="">         &lt;&gt;</span>
+<span class="">           &lt;S.Select id={id} {...props}&gt;</span>
+<span class="">diff --git a/src/frontend/pages/_document.tsx b/src/frontend/pages/_document.tsx</span>
+<span class="">index 8a68bc0..18619b8 100644</span>
+<span class="meta">--- a/src/frontend/pages/_document.tsx</span>
+<span class="meta">+++ b/src/frontend/pages/_document.tsx</span>
+<span class="meta">@@ -45,7 +45,7 @@ export default class MyDocument extends Document&lt;{ envString: string }&gt; {</span>
+<span class=""> </span>
+<span class="">   render() {</span>
+<span class="">     return (</span>
+<span class="del">-      &lt;Html&gt;</span>
+<span class="add">+      &lt;Html lang=&quot;en&quot;&gt;</span>
+<span class="">         &lt;Head&gt;</span>
+<span class="">           &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot; /&gt;</span>
+<span class="">           &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossOrigin=&quot;anonymous&quot; /&gt;</span>
+<span class="">diff --git a/src/frontend/pages/cart/index.tsx b/src/frontend/pages/cart/index.tsx</span>
+<span class="">index 9899283..7df2aa2 100644</span>
+<span class="meta">--- a/src/frontend/pages/cart/index.tsx</span>
+<span class="meta">+++ b/src/frontend/pages/cart/index.tsx</span>
+<span class="meta">@@ -3,6 +3,7 @@</span>
+<span class=""> </span>
+<span class=""> import { NextPage } from 'next';</span>
+<span class=""> import Head from 'next/head';</span>
+<span class="add">+import { useState } from 'react';</span>
+<span class=""> import Layout from '../../components/Layout';</span>
+<span class=""> import Recommendations from '../../components/Recommendations';</span>
+<span class=""> import * as S from '../../styles/Cart.styled';</span>
+<span class="meta">@@ -15,6 +16,7 @@ const Cart: NextPage = () =&gt; {</span>
+<span class="">   const {</span>
+<span class="">     cart: { items },</span>
+<span class="">   } = useCart();</span>
+<span class="add">+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);</span>
+<span class=""> </span>
+<span class="">   return (</span>
+<span class="">     &lt;AdProvider</span>
+<span class="meta">@@ -26,7 +28,7 @@ const Cart: NextPage = () =&gt; {</span>
+<span class="">       &lt;/Head&gt;</span>
+<span class="">       &lt;Layout&gt;</span>
+<span class="">         &lt;S.Cart&gt;</span>
+<span class="del">-          {(!!items.length &amp;&amp; &lt;CartDetail /&gt;) || &lt;EmptyCart /&gt;}</span>
+<span class="add">+          {((!!items.length || isPlacingOrder) &amp;&amp; &lt;CartDetail onPlacingOrderChange={setIsPlacingOrder} /&gt;) || &lt;EmptyCart /&gt;}</span>
+<span class="">           &lt;Recommendations /&gt;</span>
+<span class="">         &lt;/S.Cart&gt;</span>
+<span class="">       &lt;/Layout&gt;</span>
+<span class="">diff --git a/src/frontend/pages/product/[productId]/index.tsx b/src/frontend/pages/product/[productId]/index.tsx</span>
+<span class="">index d3b0b9f..7b8aa38 100644</span>
+<span class="meta">--- a/src/frontend/pages/product/[productId]/index.tsx</span>
+<span class="meta">+++ b/src/frontend/pages/product/[productId]/index.tsx</span>
+<span class="meta">@@ -85,6 +85,7 @@ const ProductDetail: NextPage = () =&gt; {</span>
+<span class="">               &lt;S.Text&gt;Quantity&lt;/S.Text&gt;</span>
+<span class="">               &lt;Select</span>
+<span class="">                 data-cy={CypressFields.ProductQuantity}</span>
+<span class="add">+                aria-label=&quot;Quantity&quot;</span>
+<span class="">                 onChange={event =&gt; setQuantity(+event.target.value)}</span>
+<span class="">                 value={quantity}</span>
+<span class="">               &gt;</span>
+<span class=""></span></pre></div>
+<div class="box" style="margin-bottom:16px"><h3 id="fix-2">Fix 2, made from the after fix 1 round</h3><p>Fix the checkout button focus order that left the keyboard shopper tabbing past the Place Order control, while preserving the existing visual button order for mouse users.</p><ul><li><code>components/CheckoutForm/CheckoutForm.tsx</code>: This makes the desktop tab order match the visible button order and removes the nested link/button tab trap before checkout submission. <span class="helps">For Joel</span></li><li><code>components/CheckoutForm/CheckoutForm.styled.ts</code>: This preserves the current visual button placement while allowing keyboard focus to reach Place Order in the expected sequence. <span class="helps">For Joel</span></li></ul><p>Shop frontend rebuilt with it: <strong>passed in 71 s</strong>.</p><pre class="diff" tabindex="0" aria-label="Patch 2"><span class="">diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="">index 748eea8..c11ebc5 100644</span>
+<span class="meta">--- a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="meta">+++ b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts</span>
+<span class="meta">@@ -28,21 +28,13 @@ export const SubmitContainer = styled.div`</span>
+<span class="">   justify-content: center;</span>
+<span class="">   align-items: center;</span>
+<span class="">   gap: 20px;</span>
+<span class="del">-  flex-direction: column;</span>
+<span class="add">+  flex-direction: column-reverse;</span>
+<span class=""> </span>
+<span class="">   ${({ theme }) =&gt; theme.breakpoints.desktop} {</span>
+<span class="">     flex-direction: row;</span>
+<span class="">     justify-content: end;</span>
+<span class="">     align-items: center;</span>
+<span class="">     margin-top: 67px;</span>
+<span class="del">-</span>
+<span class="del">-    &gt; :first-child {</span>
+<span class="del">-      order: 2;</span>
+<span class="del">-    }</span>
+<span class="del">-</span>
+<span class="del">-    &gt; :last-child {</span>
+<span class="del">-      order: 1;</span>
+<span class="del">-    }</span>
+<span class="">   }</span>
+<span class=""> `;</span>
+<span class=""> </span>
+<span class="">diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.tsx b/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="">index ac48d5b..78461ca 100644</span>
+<span class="meta">--- a/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="meta">+++ b/src/frontend/components/CheckoutForm/CheckoutForm.tsx</span>
+<span class="meta">@@ -190,10 +190,10 @@ const CheckoutForm = ({ onSubmit }: IProps) =&gt; {</span>
+<span class="">       &lt;/S.CardRow&gt;</span>
+<span class=""> </span>
+<span class="">       &lt;S.SubmitContainer&gt;</span>
+<span class="del">-        &lt;S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=&quot;submit&quot;&gt;Place Order&lt;/S.CartButton&gt;</span>
+<span class="del">-        &lt;Link href=&quot;/&quot;&gt;</span>
+<span class="del">-          &lt;S.CartButton $type=&quot;secondary&quot; type=&quot;button&quot;&gt;Continue Shopping&lt;/S.CartButton&gt;</span>
+<span class="add">+        &lt;Link href=&quot;/&quot; passHref legacyBehavior&gt;</span>
+<span class="add">+          &lt;S.CartButton as=&quot;a&quot; $type=&quot;secondary&quot;&gt;Continue Shopping&lt;/S.CartButton&gt;</span>
+<span class="">         &lt;/Link&gt;</span>
+<span class="add">+        &lt;S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=&quot;submit&quot;&gt;Place Order&lt;/S.CartButton&gt;</span>
+<span class="">       &lt;/S.SubmitContainer&gt;</span>
+<span class="">     &lt;/S.CheckoutForm&gt;</span>
+<span class="">   );</span>
+<span class=""></span></pre></div>
+<h2>Rule-based check</h2>
+<div class="box">
+<p>axe-core on the home, product and cart pages, and a scripted Tab walk on a product page. No AI involved.</p>
+<p>Add To Cart by keyboard: before, tab stop 4, focus invisible. after fix 1, tab stop 4, focus visible. after fix 2, tab stop 4, focus visible.</p>
+<p>Open a "You May Also Like" card by keyboard: before, not checked. after fix 1, not checked. after fix 2, not checked.</p>
+<table><thead><tr><th scope="col">Rule (elements failing)</th><th scope="col">Before</th><th scope="col">After fix 1</th><th scope="col">After fix 2</th></tr></thead><tbody><tr><th scope="row"><code>color-contrast</code> Elements must meet minimum color contrast ratio thresholds</th><td>6</td><td>6</td><td>6</td></tr><tr><th scope="row"><code>html-has-lang</code> &lt;html&gt; element must have a lang attribute</th><td>3</td><td>0</td><td>0</td></tr><tr><th scope="row"><code>image-alt</code> Images must have alternative text</th><td>4</td><td>0</td><td>0</td></tr><tr><th scope="row"><code>link-name</code> Links must have discernible text</th><td>3</td><td>0</td><td>0</td></tr><tr><th scope="row"><code>select-name</code> Select element must have an accessible name</th><td>7</td><td>0</td><td>0</td></tr><tr><th scope="row"><code>label</code> Form elements must have labels</th><td>6</td><td>0</td><td>0</td></tr></tbody></table>
+<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>Before</h4><pre class="tree" tabindex="0">- heading &quot;Shipping Address&quot; [level=1]
+- paragraph: E-mail Address
+- textbox: someone@example.com
+- paragraph: Street Address
+- textbox: 1600 Amphitheatre Parkway
+- paragraph: Zip Code
+- textbox: &quot;94043&quot;
+- paragraph: City
+- textbox: Mountain View
+- paragraph: State
+- textbox: CA
+- paragraph: Country
+- textbox &quot;Country Name&quot;: United States
+- heading &quot;Payment Method&quot; [level=1]
+- paragraph: Credit Card Number
+- textbox &quot;0000-0000-0000-0000&quot;: 4432-8015-6152-0454
+- paragraph: Month
+- combobox:
+  - option &quot;January&quot; [selected]
+  - option &quot;February&quot;
+  - option &quot;March&quot;
+  - option &quot;April&quot;
+  - option &quot;May&quot;
+  - option &quot;June&quot;
+  - option &quot;July&quot;
+  - option &quot;August&quot;
+  - option &quot;September&quot;
+  - option &quot;October&quot;
+  - option &quot;November&quot;
+  - option &quot;January&quot;
+- img &quot;arrow&quot;
+- paragraph: Year
+- combobox:
+  - option &quot;2026&quot;
+  - option &quot;2027&quot;
+  - option &quot;2028&quot;
+  - option &quot;2029&quot;
+  - option &quot;2030&quot; [selected]
+  - option &quot;2031&quot;
+  - option &quot;2032&quot;
+  - option &quot;2033&quot;
+  - option &quot;2034&quot;
+  - option &quot;2035&quot;
+  - option &quot;2036&quot;
+  - option &quot;2037&quot;
+  - option &quot;2038&quot;
+  - option &quot;2039&quot;
+  - option &quot;2040&quot;
+  - option &quot;2041&quot;
+  - option &quot;2042&quot;
+  - option &quot;2043&quot;
+  - option &quot;2044&quot;
+  - option &quot;2045&quot;
+- img &quot;arrow&quot;
+- paragraph: CVV
+- textbox: &quot;672&quot;
+- link &quot;Continue Shopping&quot;:
+  - /url: /
+  - button &quot;Continue Shopping&quot;
+- button &quot;Place Order&quot;</pre></div><div><h4>After fix 2</h4><pre class="tree" tabindex="0">- heading &quot;Shipping Address&quot; [level=1]
+- text: E-mail Address
+- textbox &quot;E-mail Address&quot;: someone@example.com
+- text: Street Address
+- textbox &quot;Street Address&quot;: 1600 Amphitheatre Parkway
+- text: Zip Code
+- textbox &quot;Zip Code&quot;: &quot;94043&quot;
+- text: City
+- textbox &quot;City&quot;: Mountain View
+- text: State
+- textbox &quot;State&quot;: CA
+- text: Country
+- textbox &quot;Country&quot;:
+  - /placeholder: Country Name
+  - text: United States
+- heading &quot;Payment Method&quot; [level=1]
+- text: Credit Card Number
+- textbox &quot;Credit Card Number&quot;:
+  - /placeholder: 0000-0000-0000-0000
+  - text: 4432-8015-6152-0454
+- text: Month
+- combobox &quot;Month&quot;:
+  - option &quot;January&quot; [selected]
+  - option &quot;February&quot;
+  - option &quot;March&quot;
+  - option &quot;April&quot;
+  - option &quot;May&quot;
+  - option &quot;June&quot;
+  - option &quot;July&quot;
+  - option &quot;August&quot;
+  - option &quot;September&quot;
+  - option &quot;October&quot;
+  - option &quot;November&quot;
+  - option &quot;January&quot;
+- img &quot;arrow&quot;
+- text: Year
+- combobox &quot;Year&quot;:
+  - option &quot;2026&quot;
+  - option &quot;2027&quot;
+  - option &quot;2028&quot;
+  - option &quot;2029&quot;
+  - option &quot;2030&quot; [selected]
+  - option &quot;2031&quot;
+  - option &quot;2032&quot;
+  - option &quot;2033&quot;
+  - option &quot;2034&quot;
+  - option &quot;2035&quot;
+  - option &quot;2036&quot;
+  - option &quot;2037&quot;
+  - option &quot;2038&quot;
+  - option &quot;2039&quot;
+  - option &quot;2040&quot;
+  - option &quot;2041&quot;
+  - option &quot;2042&quot;
+  - option &quot;2043&quot;
+  - option &quot;2044&quot;
+  - option &quot;2045&quot;
+- img &quot;arrow&quot;
+- text: CVV
+- textbox &quot;CVV&quot;: &quot;672&quot;
+- link &quot;Continue Shopping&quot;:
+  - /url: /
+- button &quot;Place Order&quot;</pre></div></div>
+</div>
+</main>
+<footer>
+<p>Rounds <code>20261110-0314-before</code>, <code>20261110-0321-after</code>, <code>20261110-0327-after2</code>. Shop: OpenTelemetry Demo 3.1.0 (Astronomy Shop). AI cost per round: before 0.17 USD, after fix 1 0.11 USD, after fix 2 0.11 USD. Every model call is in <code>spend/openai.jsonl</code>.</p>
+</footer>
+</body>
+</html>

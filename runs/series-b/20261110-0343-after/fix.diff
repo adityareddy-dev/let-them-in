@@ -1,0 +1,39 @@
+diff --git a/src/frontend/pages/product/[productId]/index.tsx b/src/frontend/pages/product/[productId]/index.tsx
+index d3b0b9f..f6851d9 100644
+--- a/src/frontend/pages/product/[productId]/index.tsx
++++ b/src/frontend/pages/product/[productId]/index.tsx
+@@ -5,7 +5,7 @@ import { NextPage } from 'next';
+ import Head from 'next/head';
+ import Image from 'next/image';
+ import { useRouter } from 'next/router';
+-import { useCallback, useState, useEffect } from 'react';
++import { useCallback, useState, useEffect, useRef } from 'react';
+ import { useQuery } from '@tanstack/react-query';
+ import Ad from '../../../components/Ad';
+ import Layout from '../../../components/Layout';
+@@ -25,6 +25,7 @@ const quantityOptions = new Array(10).fill(0).map((_, i) => i + 1);
+ const ProductDetail: NextPage = () => {
+   const { push, query } = useRouter();
+   const [quantity, setQuantity] = useState(1);
++  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
+   const {
+     addItem,
+     cart: { items },
+@@ -34,6 +35,8 @@ const ProductDetail: NextPage = () => {
+ 
+   useEffect(() => {
+     setQuantity(1);
++    window.scrollTo(0, 0);
++    addToCartButtonRef.current?.focus();
+   }, [productId]);
+ 
+   const {
+@@ -94,7 +97,7 @@ const ProductDetail: NextPage = () => {
+                   </option>
+                 ))}
+               </Select>
+-              <S.AddToCart data-cy={CypressFields.ProductAddToCart} onClick={onAddItem}>
++              <S.AddToCart ref={addToCartButtonRef} data-cy={CypressFields.ProductAddToCart} onClick={onAddItem}>
+                 <Image src="/icons/Cart.svg" height="15" width="15" alt="cart" /> Add To Cart
+               </S.AddToCart>
+             </S.Details>

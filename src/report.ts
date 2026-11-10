@@ -143,8 +143,8 @@ ${cells}
       const edits = fix.edits
         .map((e) => `<li><code>${esc(e.file)}</code>: ${esc(e.why)} <span class="helps">For ${e.helps.map((h) => esc(SHOPPERS.find((x) => x.id === h)?.name ?? h)).join(', ')}</span></li>`)
         .join('');
-      const head = fixes.length > 1 ? `<h3 id="fix-${i + 1}">Fix ${i + 1}, from the records of round ${esc(titles[i].toLowerCase())}</h3>` : '';
-      return `<div class="box" style="margin-bottom:16px">${head}<p>${esc(fix.summary)}</p><ul>${edits}</ul><p>Shop frontend rebuilt with it: <strong>${fix.built ? `passed in ${fix.buildSeconds} s` : 'failed'}</strong>${fix.attempts > 1 ? `, on attempt ${fix.attempts}` : ''}.</p>${diff ? `<pre class="diff" aria-label="Patch ${i + 1}">${diffHtml(diff)}</pre>` : ''}</div>`;
+      const head = fixes.length > 1 ? `<h3 id="fix-${i + 1}">Fix ${i + 1}, made from the ${esc(titles[i].toLowerCase())} round</h3>` : '';
+      return `<div class="box" style="margin-bottom:16px">${head}<p>${esc(fix.summary)}</p><ul>${edits}</ul><p>Shop frontend rebuilt with it: <strong>${fix.built ? `passed in ${fix.buildSeconds} s` : 'failed'}</strong>${fix.attempts > 1 ? `, on attempt ${fix.attempts}` : ''}.</p>${diff ? `<pre class="diff" tabindex="0" aria-label="Patch ${i + 1}">${diffHtml(diff)}</pre>` : ''}</div>`;
     })
     .join('\n');
 
@@ -152,7 +152,7 @@ ${cells}
     .map((r, i) => `<div><p class="big">${r.bought} of ${r.outcomes.length}</p><p class="lbl">bought, ${esc(titles[i].toLowerCase())}</p></div>`)
     .join('');
   const heard = scans[0]?.checkoutFormHeard
-    ? `<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>${esc(titles[0])}</h4><pre class="tree">${esc(scans[0].checkoutFormHeard)}</pre></div><div><h4>${esc(titles[titles.length - 1])}</h4><pre class="tree">${esc(scans[scans.length - 1]?.checkoutFormHeard ?? '')}</pre></div></div>`
+    ? `<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>${esc(titles[0])}</h4><pre class="tree" tabindex="0">${esc(scans[0].checkoutFormHeard)}</pre></div><div><h4>${esc(titles[titles.length - 1])}</h4><pre class="tree" tabindex="0">${esc(scans[scans.length - 1]?.checkoutFormHeard ?? '')}</pre></div></div>`
     : '';
   const cost = rounds.map((r, i) => `${esc(titles[i].toLowerCase())} ${esc(r.spendUsd.toFixed(2))} USD`).join(', ');
 
@@ -229,6 +229,7 @@ ${fixHtml || '<div class="box"><p>No fix yet.</p></div>'}
 <div class="box">
 <p>axe-core on the home, product and cart pages, and a scripted Tab walk on a product page. No AI involved.</p>
 <p>Add To Cart by keyboard: ${scans.map((sc, i) => `${esc(titles[i].toLowerCase())}, ${esc(focusLine(sc))}`).join('. ')}.</p>
+<p>Open a "You May Also Like" card by keyboard: ${scans.map((sc, i) => `${esc(titles[i].toLowerCase())}, ${sc?.focusAfterOpeningCard ? `focus lands on ${esc(sc.focusAfterOpeningCard.afterEnter.replace(/^body .*/, 'the page body'))} and the next Tab goes to ${esc(sc.focusAfterOpeningCard.afterTab)}` : 'not checked'}`).join('. ')}.</p>
 <table><thead><tr><th scope="col">Rule (elements failing)</th>${titles.map((t) => `<th scope="col">${esc(t)}</th>`).join('')}</tr></thead><tbody>${ruleRows || `<tr><td colspan="${titles.length + 1}">No findings</td></tr>`}</tbody></table>
 ${heard}
 </div>

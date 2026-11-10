@@ -14,7 +14,7 @@ const FONT = '/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf';
 type Caption = { at: number; dur: number; text: string };
 type Segment =
   | { kind: 'card'; title: string; lines?: string[]; seconds: number; captions?: Caption[] }
-  | { kind: 'clip'; file: string; from?: number; to?: number; speed: number; label: string; captions?: Caption[] }
+  | { kind: 'clip'; file: string; from?: number; to?: number; speed: number; label: string; crop?: [number, number]; captions?: Caption[] }
   | { kind: 'page'; file: string; seconds: number; scrollTo: { selector: string; at: number }[]; captions?: Caption[] };
 
 const ff = (args: string[]) => execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], { stdio: 'inherit' });
@@ -25,7 +25,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const dt = (s: string) => s.replace(/\\/g, '\\\\').replace(/:/g, '\\:').replace(/'/g, '\u2019').replace(/%/g, '\\%');
 
 function cardHtml(title: string, lines: string[]): string {
-  return `<!doctype html><html lang="en"><body style="margin:0;width:${W}px;height:${H}px;background:#16182d;color:#fff;font-family:'Noto Sans',sans-serif;display:flex;align-items:center;justify-content:center">
+  return `<!doctype html><html lang="en"><body style="margin:0;width:${W}px;height:${H}px;background:#16182d;color:#fff;font-family:'Noto Sans',sans-serif;display:flex;align-items:flex-start;justify-content:center;padding-top:90px;box-sizing:border-box">
 <div style="max-width:1040px">
 <div style="display:flex;align-items:center;gap:18px;margin-bottom:28px">
 <svg width="64" height="64" viewBox="0 0 64 64"><rect x="6" y="6" width="52" height="52" rx="12" fill="#c2410c"/><path d="M20 50V14h24v36" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><path d="M20 14l14 5v35l-14-4z" fill="#fff"/><circle cx="30" cy="34" r="2.2" fill="#c2410c"/></svg>
@@ -51,7 +51,7 @@ function renderClip(seg: Extract<Segment, { kind: 'clip' }>, out: string) {
   const label = `drawtext=fontfile=${FONT}:text='${dt(seg.label)}':x=20:y=20:fontsize=26:fontcolor=white:box=1:boxcolor=0x16182dcc:boxborderw=12`;
   ff([
     '-ss', String(from), '-t', String(len), '-i', seg.file,
-    '-vf', `setpts=PTS/${seg.speed},fps=30,scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=0x16182d,${label}`,
+    '-vf', `setpts=PTS/${seg.speed},fps=30,${seg.crop ? `crop=${seg.crop[0]}:${seg.crop[1]}:0:0,` : ''}scale=${W}:${H}:force_original_aspect_ratio=decrease,pad=${W}:${H}:(ow-iw)/2:(oh-ih)/2:color=0x16182d,${label}`,
     ...encode, out,
   ]);
 }
@@ -68,7 +68,7 @@ async function renderPage(seg: Extract<Segment, { kind: 'page' }>, out: string, 
   for (const s of seg.scrollTo) {
     const wait = s.at * 1000 - (Date.now() - t0);
     if (wait > 0) await p.waitForTimeout(wait);
-    await p.evaluate((sel) => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), s.selector);
+    await p.evaluate((sel) => document.querySelector(sel)?.scrollIntoView({ behavior: 'instant', block: 'start' }), s.selector);
   }
   const rest = seg.seconds * 1000 - (Date.now() - t0);
   if (rest > 0) await p.waitForTimeout(rest);
@@ -115,7 +115,7 @@ async function main() {
   ff(['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', joined]);
   const srt = outFile.replace(/\.mp4$/, '.srt');
   writeFileSync(srt, subs.map((s, i) => `${i + 1}\n${srtTime(s.start)} --> ${srtTime(s.end)}\n${s.text}\n`).join('\n'));
-  const style = 'FontName=Noto Sans,FontSize=20,PrimaryColour=&H00FFFFFF,BackColour=&HC02D1816,BorderStyle=4,Outline=0,Shadow=0,MarginV=28,Bold=1';
+  const style = 'FontName=Noto Sans,FontSize=20,PrimaryColour=&H00FFFFFF,BackColour=&H202D1816,BorderStyle=4,Outline=0,Shadow=0,MarginV=28,Bold=1';
   ff(['-i', joined, '-vf', `subtitles=${srt.replace(/:/g, '\\:')}:force_style='${style}'`, ...encode, '-movflags', '+faststart', outFile]);
   rmSync(tmp, { recursive: true, force: true });
   console.log(`${outFile}: ${probe(outFile).toFixed(1)} s, captions in ${srt}`);

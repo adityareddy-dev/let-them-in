@@ -31,6 +31,7 @@ export interface ScanResult {
   addToCartTabStop: number | null;
   addToCartShowsFocus: boolean | null;
   checkoutFormHeard: string;
+  focusAfterOpeningCard?: { card: string; afterEnter: string; afterTab: string; scrollAfterTab: number };
 }
 
 async function axe(page: Page, label: string): Promise<AxeFinding[]> {
@@ -69,6 +70,31 @@ export async function tabWalk(page: Page, max = 60): Promise<TabStop[]> {
   return stops;
 }
 
+// Open a "You May Also Like" card by keyboard, then press Tab once. Where does focus go?
+export async function focusAfterOpeningCard(page: Page, productUrl: string): Promise<ScanResult['focusAfterOpeningCard']> {
+  await page.goto(productUrl, { waitUntil: 'load' });
+  await page.waitForTimeout(2500);
+  const focused = () =>
+    page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      const name = el ? (el.innerText || el.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 50) : '';
+      return { what: el ? `${el.tagName.toLowerCase()} "${name}"` : 'nothing', y: Math.round(scrollY), card: !!el && el.tagName === 'A' && name.includes('$') };
+    });
+  let card = '';
+  for (let i = 0; i < 25 && !card; i++) {
+    await page.keyboard.press('Tab');
+    const f = await focused();
+    if (f.card) card = f.what;
+  }
+  if (!card) return undefined;
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(3000);
+  const afterEnter = (await focused()).what;
+  await page.keyboard.press('Tab');
+  const t = await focused();
+  return { card, afterEnter, afterTab: t.what, scrollAfterTab: t.y };
+}
+
 export async function scan(shopUrl: string, outDir: string): Promise<ScanResult> {
   const browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
@@ -90,6 +116,7 @@ export async function scan(shopUrl: string, outDir: string): Promise<ScanResult>
     findings.push(...(await axe(page, 'cart and checkout form')));
     // what a screen reader gets from the checkout form
     const checkoutFormHeard = await page.locator('form').first().ariaSnapshot().catch(() => '');
+    const nav = await focusAfterOpeningCard(page, new URL(href ?? '/', shopUrl).toString()).catch(() => undefined);
     const result: ScanResult = {
       shopUrl,
       at: new Date().toISOString(),
@@ -98,6 +125,7 @@ export async function scan(shopUrl: string, outDir: string): Promise<ScanResult>
       addToCartTabStop: hit?.n ?? null,
       addToCartShowsFocus: hit ? hit.visibleFocus : null,
       checkoutFormHeard,
+      focusAfterOpeningCard: nav,
     };
     mkdirSync(outDir, { recursive: true });
     writeFileSync(join(outDir, 'scan.json'), JSON.stringify(result, null, 2) + '\n');

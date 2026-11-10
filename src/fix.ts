@@ -124,7 +124,12 @@ export function lockoutNotes(roundDir: string): string {
         sc.findings.map((f) => `- ${f.page}: ${f.id} (${f.impact}) ${f.help}. Elements: ${f.nodes.map((n) => n.html).join(' | ')}`).join('\n') +
         `\nKeyboard walk on a product page: Add To Cart is tab stop ${sc.addToCartTabStop ?? 'never reached'}, ` +
         `shows focus: ${sc.addToCartShowsFocus}. Stops without a visible focus indicator: ` +
-        sc.tabStops.filter((t) => !t.visibleFocus).map((t) => `${t.tag} "${t.name}"`).join(', '),
+        sc.tabStops.filter((t) => !t.visibleFocus).map((t) => `${t.tag} "${t.name}"`).join(', ') +
+        (sc.focusAfterOpeningCard
+          ? `\nKeyboard check on a product page: Tab to the recommended card ${sc.focusAfterOpeningCard.card} and press Enter. ` +
+            `The new product page opens with focus on ${sc.focusAfterOpeningCard.afterEnter}. One Tab later focus is on ` +
+            `${sc.focusAfterOpeningCard.afterTab}, with the page scrolled ${sc.focusAfterOpeningCard.scrollAfterTab}px down.`
+          : ''),
     );
   }
   return parts.join('\n\n');

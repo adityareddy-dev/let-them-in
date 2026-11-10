@@ -1,0 +1,67 @@
+{
+  "id": "20261110-0343-after",
+  "label": "after",
+  "shopUrl": "http://127.0.0.1:8090",
+  "shop": "OpenTelemetry Demo 3.1.0 (Astronomy Shop)",
+  "shopperModel": "gpt-5.5",
+  "startedAt": "2026-11-10T03:43:05.068Z",
+  "finishedAt": "2026-11-10T03:46:06.264Z",
+  "outcomes": [
+    {
+      "shopper": "tom",
+      "name": "Tom",
+      "mode": "mouse",
+      "outcome": "bought",
+      "steps": 7,
+      "lastUrl": "http://127.0.0.1:8090/cart/checkout/f0f0c168-dcb8-11f1-a1b1-8e234a8ce210?order=%7B%22orderId%22%3A%22f0f0c168-dcb8-11f1-a1b1-8e234a8ce210%22%2C%22shippingTrackingId%22%3A%22e64045db-6e5e-4fc2-a8f4-086093c483aa%22%2C%22shippingCost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A8%2C%22nanos%22%3A990000000%7D%2C%22shippingAddress%22%3A%7B%22streetAddress%22%3A%221600+Amphitheatre+Parkway%22%2C%22city%22%3A%22Mountain+View%22%2C%22state%22%3A%22CA%22%2C%22country%22%3A%22United+States%22%2C%22zipCode%22%3A%2294043%22%7D%2C%22items%22%3A%5B%7B%22cost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A129%2C%22nanos%22%3A949999999%7D%2C%22item%22%3A%7B%22productId%22%3A%221YMWWN1N4O%22%2C%22quantity%22%3A1%2C%22product%22%3A%7B%22id%22%3A%221YMWWN1N4O%22%2C%22name%22%3A%22Eclipsmart+Travel+Refractor+Telescope%22%2C%22description%22%3A%22Dedicated+white-light+solar+scope+for+the+observer+on+the+go.+The+50mm+refracting+solar+scope+uses+Solar+Safe%2C+ISO+compliant%2C+full-aperture+glass+filter+material+to+ensure+the+safest+view+of+solar+events.++The+kit+comes+complete+with+everything+you+need%2C+including+the+dedicated+travel+solar+scope%2C+a+Solar+Safe+finderscope%2C+tripod%2C+a+high+quality+20mm+%2818x%29+Kellner+eyepiece+and+a+nylon+backpack+to+carry+everything+in.++This+Travel+Solar+Scope+makes+it+easy+to+share+the+Sun+as+well+as+partial+and+total+solar+eclipses+with+the+whole+family+and+offers+much+higher+magnifications+than+you+would+otherwise+get+using+handheld+solar+viewers+or+binoculars.%22%2C%22picture%22%3A%22EclipsmartTravelRefractorTelescope.jpg%22%2C%22priceUsd%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A129%2C%22nanos%22%3A950000000%7D%2C%22categories%22%3A%5B%22telescopes%22%2C%22travel%22%5D%7D%7D%7D%5D%7D",
+      "reason": "order complete",
+      "lastSay": "I’ll place the order now.",
+      "orderId": "f0f0c168-dcb8-11f1-a1b1-8e234a8ce210"
+    },
+    {
+      "shopper": "joel",
+      "name": "Joel",
+      "mode": "keyboard",
+      "outcome": "step_limit",
+      "steps": 30,
+      "lastUrl": "http://127.0.0.1:8090/product/OLJCESPC7Z",
+      "reason": "still trying after 30 steps",
+      "lastSay": "I’ll add this telescope to the cart."
+    },
+    {
+      "shopper": "maya",
+      "name": "Maya",
+      "mode": "screenreader",
+      "outcome": "bought",
+      "steps": 4,
+      "lastUrl": "http://127.0.0.1:8090/cart/checkout/e858b848-dcb8-11f1-a1b1-8e234a8ce210?order=%7B%22orderId%22%3A%22e858b848-dcb8-11f1-a1b1-8e234a8ce210%22%2C%22shippingTrackingId%22%3A%2221cd9c87-3cbb-44b9-b0c8-2133a3d3ab77%22%2C%22shippingCost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A8%2C%22nanos%22%3A990000000%7D%2C%22shippingAddress%22%3A%7B%22streetAddress%22%3A%221600+Amphitheatre+Parkway%22%2C%22city%22%3A%22Mountain+View%22%2C%22state%22%3A%22CA%22%2C%22country%22%3A%22United+States%22%2C%22zipCode%22%3A%2294043%22%7D%2C%22items%22%3A%5B%7B%22cost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A0%2C%22nanos%22%3A990000000%7D%2C%22item%22%3A%7B%22productId%22%3A%22HQTGWGPNH4%22%2C%22quantity%22%3A1%2C%22product%22%3A%7B%22id%22%3A%22HQTGWGPNH4%22%2C%22name%22%3A%22The+Comet+Book%22%2C%22description%22%3A%22A+16th-century+treatise+on+comets%2C+created+anonymously+in+Flanders+%28now+northern+France%29+and+now+held+at+the+Universit%C3%A4tsbibliothek+Kassel.+Commonly+known+as+The+Comet+Book+%28or+Kometenbuch+in+German%29%2C+its+full+title+translates+as+%5C%22Comets+and+their+General+and+Particular+Meanings%2C+According+to+Ptolome%C3%A9%2C+Albumasar%2C+Haly%2C+Aliquind+and+other+Astrologers%5C%22.+The+image+is+from+https%3A%2F%2Fpublicdomainreview.org%2Fcollection%2Fthe-comet-book%2C+made+available+by+the+Universit%C3%A4tsbibliothek+Kassel+under+a+CC-BY+SA+4.0+license+%28https%3A%2F%2Fcreativecommons.org%2Flicenses%2Fby-sa%2F4.0%2F%29%22%2C%22picture%22%3A%22TheCometBook.jpg%22%2C%22priceUsd%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A0%2C%22nanos%22%3A990000000%7D%2C%22categories%22%3A%5B%22books%22%5D%7D%7D%7D%5D%7D",
+      "reason": "order complete",
+      "lastSay": "I’ll place the order now.",
+      "orderId": "e858b848-dcb8-11f1-a1b1-8e234a8ce210"
+    },
+    {
+      "shopper": "ines",
+      "name": "Ines",
+      "mode": "zoom",
+      "outcome": "bought",
+      "steps": 12,
+      "lastUrl": "http://127.0.0.1:8090/cart/checkout/fff21343-dcb8-11f1-a1b1-8e234a8ce210?order=%7B%22orderId%22%3A%22fff21343-dcb8-11f1-a1b1-8e234a8ce210%22%2C%22shippingTrackingId%22%3A%2216a00093-3190-4fac-b1ab-b2f6c3dcf20e%22%2C%22shippingCost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A8%2C%22nanos%22%3A990000000%7D%2C%22shippingAddress%22%3A%7B%22streetAddress%22%3A%221600+Amphitheatre+Parkway%22%2C%22city%22%3A%22Mountain+View%22%2C%22state%22%3A%22CA%22%2C%22country%22%3A%22United+States%22%2C%22zipCode%22%3A%2294043%22%7D%2C%22items%22%3A%5B%7B%22cost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22item%22%3A%7B%22productId%22%3A%220PUK6V6EV0%22%2C%22quantity%22%3A1%2C%22product%22%3A%7B%22id%22%3A%220PUK6V6EV0%22%2C%22name%22%3A%22Solar+System+Color+Imager%22%2C%22description%22%3A%22You+have+your+new+telescope+and+have+observed+Saturn+and+Jupiter.+Now+you%27re+ready+to+take+the+next+step+and+start+imaging+them.+But+where+do+you+begin%3F+The+NexImage+10+Solar+System+Imager+is+the+perfect+solution.%22%2C%22picture%22%3A%22SolarSystemColorImager.jpg%22%2C%22priceUsd%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22categories%22%3A%5B%22accessories%22%2C%22telescopes%22%5D%7D%7D%7D%5D%7D",
+      "reason": "order complete",
+      "lastSay": "I’m going to place the order now.",
+      "orderId": "fff21343-dcb8-11f1-a1b1-8e234a8ce210"
+    },
+    {
+      "shopper": "kofi",
+      "name": "Kofi",
+      "mode": "slowphone",
+      "outcome": "bought",
+      "steps": 9,
+      "lastUrl": "http://127.0.0.1:8090/cart/checkout/0d671385-dcb9-11f1-a1b1-8e234a8ce210?order=%7B%22orderId%22%3A%220d671385-dcb9-11f1-a1b1-8e234a8ce210%22%2C%22shippingTrackingId%22%3A%229f3df874-d014-459f-a0e8-302ba9a85f4e%22%2C%22shippingCost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A8%2C%22nanos%22%3A990000000%7D%2C%22shippingAddress%22%3A%7B%22streetAddress%22%3A%221600+Amphitheatre+Parkway%22%2C%22city%22%3A%22Mountain+View%22%2C%22state%22%3A%22CA%22%2C%22country%22%3A%22United+States%22%2C%22zipCode%22%3A%2294043%22%7D%2C%22items%22%3A%5B%7B%22cost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22item%22%3A%7B%22productId%22%3A%220PUK6V6EV0%22%2C%22quantity%22%3A1%2C%22product%22%3A%7B%22id%22%3A%220PUK6V6EV0%22%2C%22name%22%3A%22Solar+System+Color+Imager%22%2C%22description%22%3A%22You+have+your+new+telescope+and+have+observed+Saturn+and+Jupiter.+Now+you%27re+ready+to+take+the+next+step+and+start+imaging+them.+But+where+do+you+begin%3F+The+NexImage+10+Solar+System+Imager+is+the+perfect+solution.%22%2C%22picture%22%3A%22SolarSystemColorImager.jpg%22%2C%22priceUsd%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22categories%22%3A%5B%22accessories%22%2C%22telescopes%22%5D%7D%7D%7D%5D%7D",
+      "reason": "order complete",
+      "lastSay": "I’ll choose this telescope and try again.",
+      "orderId": "0d671385-dcb9-11f1-a1b1-8e234a8ce210"
+    }
+  ],
+  "bought": 4,
+  "spendUsd": 0.7813
+}

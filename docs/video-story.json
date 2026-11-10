@@ -1,0 +1,141 @@
+{
+  "segments": [
+    {
+      "kind": "card",
+      "title": "Who does your shop lock out?",
+      "lines": ["AI shoppers with different access needs try a real web shop, in a real browser."],
+      "seconds": 6,
+      "captions": [{ "at": 0.5, "dur": 5.3, "text": "Let Them In sends AI shoppers into a real shop and shows who gets locked out." }]
+    },
+    {
+      "kind": "card",
+      "title": "Five shoppers, one job",
+      "lines": [
+        "Tom: mouse, no access needs",
+        "Joel: keyboard only",
+        "Maya: blind, screen reader",
+        "Ines: low vision, 200% zoom",
+        "Kofi: cheap phone, slow network"
+      ],
+      "seconds": 11,
+      "captions": [
+        { "at": 0.3, "dur": 5.2, "text": "Each one only gets what their need allows. Joel only has keys. Maya only hears the screen reader." },
+        { "at": 5.6, "dur": 5.2, "text": "The job: pick a product, put your own email in at checkout, place the order." }
+      ]
+    },
+    {
+      "kind": "card",
+      "title": "The shop",
+      "lines": ["OpenTelemetry Demo 3.1.0, an open source web shop.", "Its frontend is not changed for the first round."],
+      "seconds": 5,
+      "captions": [{ "at": 0.3, "dur": 4.5, "text": "A visit only counts when the shop's own order confirmation page loads." }]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0338-before/tom/video.webm",
+      "speed": 6,
+      "label": "Tom, mouse, before any fix, 6x speed",
+      "captions": [{ "at": 0.3, "dur": 5.5, "text": "Tom is the baseline. He buys in 7 steps." }]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0338-before/maya/video.webm",
+      "speed": 4,
+      "label": "Maya, screen reader, before any fix, 4x speed",
+      "captions": [{ "at": 0.2, "dur": 5.2, "text": "Maya buys in 4 steps, using only what the screen reader reads out." }]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0338-before/joel/video.webm",
+      "from": 40,
+      "speed": 5,
+      "label": "Joel, keyboard only, before any fix, 5x speed",
+      "captions": [
+        { "at": 0.3, "dur": 5.7, "text": "Joel can only use the keyboard. The Add To Cart button hides its focus outline." },
+        { "at": 6.2, "dur": 5.8, "text": "Joel: \"I don't see the focus outline\"" },
+        { "at": 12.2, "dur": 6, "text": "He keeps opening other products instead of adding one to the cart." },
+        { "at": 18.4, "dur": 3.6, "text": "Joel: \"I think the Add To Cart button is focused, so I'll press it\"" },
+        { "at": 22.2, "dur": 2.8, "text": "After 30 steps he never reached the cart." }
+      ]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0338-before/kofi/video.webm",
+      "speed": 6,
+      "crop": [360, 640],
+      "label": "Kofi, slow phone, before any fix, 6x speed",
+      "captions": [
+        { "at": 0.3, "dur": 7.5, "text": "Kofi is on a slow phone. Every page takes a while." },
+        { "at": 8, "dur": 7.8, "text": "He taps Place Order. Then the cart shows empty, with no confirmation yet." }
+      ]
+    },
+    {
+      "kind": "card",
+      "title": "Before: 4 of 5 bought",
+      "lines": ["Joel is locked out.", "Kofi's confirmation shows up while he is trying to buy again."],
+      "seconds": 6,
+      "captions": [{ "at": 0.3, "dur": 5.5, "text": "Kofi: \"The cart is empty, so the last order did not clearly complete.\"" }]
+    },
+    {
+      "kind": "page",
+      "file": "report/index.html",
+      "seconds": 11,
+      "scrollTo": [{ "selector": "#fix", "at": 0.2 }],
+      "captions": [
+        { "at": 0.3, "dur": 5.5, "text": "The AI reads the steps of whoever got stuck, a rule-based scan and the shop's source code." },
+        { "at": 6, "dur": 4.8, "text": "Fix 1 gives buttons a focus outline. The shop is rebuilt from the patch and the build passes." }
+      ]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0343-after/joel/video.webm",
+      "from": 85,
+      "to": 141,
+      "speed": 4,
+      "label": "Joel, keyboard only, after fix 1, 4x speed",
+      "captions": [
+        { "at": 0.3, "dur": 6, "text": "Same five shoppers again. Joel can see the outline now, but he is still stuck." },
+        { "at": 6.5, "dur": 7.3, "text": "When he opens a product from You May Also Like, the next Tab drops him back into those cards." }
+      ]
+    },
+    {
+      "kind": "page",
+      "file": "report/index.html",
+      "seconds": 9,
+      "scrollTo": [{ "selector": "#fix-2", "at": 0.2 }],
+      "captions": [
+        { "at": 0.3, "dur": 4.2, "text": "A scripted keyboard check finds the same trap, with no AI involved." },
+        { "at": 4.7, "dur": 4.2, "text": "Fix 2: when a product opens, the page scrolls up and focus moves to Add To Cart." }
+      ]
+    },
+    {
+      "kind": "clip",
+      "file": "runs/series-b/20261110-0349-after2/joel/video.webm",
+      "speed": 4,
+      "label": "Joel, keyboard only, after fix 2, 4x speed",
+      "captions": [
+        { "at": 0.3, "dur": 6, "text": "Same Joel, same rules, 30 steps at most." },
+        { "at": 12, "dur": 5, "text": "Add To Cart already has focus. He presses Enter." },
+        { "at": 17.2, "dur": 4, "text": "He tabs to the email and types his own." },
+        { "at": 21.4, "dur": 3.6, "text": "Place Order. Bought in 19 steps." }
+      ]
+    },
+    {
+      "kind": "page",
+      "file": "report/index.html",
+      "seconds": 12,
+      "scrollTo": [{ "selector": "#joel", "at": 6 }],
+      "captions": [
+        { "at": 0.3, "dur": 5.5, "text": "Before 4 of 5. After fix 1, 4 of 5. After fix 2, 5 of 5." },
+        { "at": 6, "dur": 5.8, "text": "Each round of five shoppers cost under 1 USD in AI calls." }
+      ]
+    },
+    {
+      "kind": "card",
+      "title": "Let Them In",
+      "lines": ["Find who your shop locks out, fix it, and prove they got in.", "github.com/adityareddy-dev/let-them-in"],
+      "seconds": 6,
+      "captions": []
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "model": "gpt-5.5",
+  "summary": "Fix the keyboard trap Joel hit after opening recommended products by moving focus to the product page’s Add To Cart button when the product changes, instead of leaving focus down in the recommendations list.",
+  "edits": [
+    {
+      "file": "pages/product/[productId]/index.tsx",
+      "find": "import { useCallback, useState, useEffect } from 'react';",
+      "replace": "import { useCallback, useState, useEffect, useRef } from 'react';",
+      "why": "This adds a ref so focus can be moved away from the recommended product card after navigation.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/product/[productId]/index.tsx",
+      "find": "  const [quantity, setQuantity] = useState(1);\n  const {\n    addItem,",
+      "replace": "  const [quantity, setQuantity] = useState(1);\n  const addToCartButtonRef = useRef<HTMLButtonElement>(null);\n  const {\n    addItem,",
+      "why": "This creates a reference to the Add To Cart button that keyboard users need after opening a product.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/product/[productId]/index.tsx",
+      "find": "  useEffect(() => {\n    setQuantity(1);\n  }, [productId]);",
+      "replace": "  useEffect(() => {\n    setQuantity(1);\n    window.scrollTo(0, 0);\n    addToCartButtonRef.current?.focus();\n  }, [productId]);",
+      "why": "This prevents focus from staying in the recommendations section and puts keyboard users on the main purchase control for the new product.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/product/[productId]/index.tsx",
+      "find": "              <S.AddToCart data-cy={CypressFields.ProductAddToCart} onClick={onAddItem}>",
+      "replace": "              <S.AddToCart ref={addToCartButtonRef} data-cy={CypressFields.ProductAddToCart} onClick={onAddItem}>",
+      "why": "This makes the Add To Cart button receive focus after a product navigation.",
+      "helps": [
+        "joel"
+      ]
+    }
+  ],
+  "attempts": 1,
+  "built": true,
+  "buildSeconds": 56,
+  "buildTail": " Container currency Running \n Container astronomy-db Running \n Container payment Running \n Container image-provider Running \n Container email Running \n Container shipping Running \n Container ad Running \n Container otel-collector Running \n Container quote Running \n Container cart Running \n Container recommendation Running \n Container checkout Running \n Container product-catalog Running \n Container flagd Running \n Container frontend Recreate \n Container frontend Recreated \n Container astronomy-db Waiting \n Container valkey-cart Waiting \n Container valkey-cart Healthy \n Container astronomy-db Healthy \n Container currency Waiting \n Container email Waiting \n Container payment Waiting \n Container currency Healthy \n Container email Healthy \n Container payment Healthy \n Container ad Waiting \n Container image-provider Waiting \n Container currency Waiting \n Container recommendation Waiting \n Container quote Waiting \n Container recommendation Healthy \n Container quote Healthy \n Container currency Healthy \n Container ad Healthy \n Container image-provider Healthy \n Container frontend Starting \n Container frontend Started \ncurl: (22) The requested URL returned error: 503\n"
+}

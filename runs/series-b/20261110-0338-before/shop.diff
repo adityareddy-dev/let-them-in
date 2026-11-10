@@ -1,0 +1,16 @@
+diff --git a/src/frontend/components/Button/Button.tsx b/src/frontend/components/Button/Button.tsx
+index 0807750..b1ecba6 100644
+--- a/src/frontend/components/Button/Button.tsx
++++ b/src/frontend/components/Button/Button.tsx
+@@ -17,6 +17,11 @@ const Button = styled.button<{ $type?: 'primary' | 'secondary' | 'link' }>`
+   height: 62px;
+   cursor: pointer;
+ 
++  &:focus-visible {
++    outline: 3px solid #000;
++    outline-offset: 3px;
++  }
++
+   ${({ $type = 'primary' }) =>
+     $type === 'secondary' &&
+     css`

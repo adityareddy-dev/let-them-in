@@ -18,7 +18,7 @@ The shop is the [OpenTelemetry Demo](https://github.com/open-telemetry/opentelem
 
 Every shopper has the same job: buy one product, change the email at checkout to their own and place the order. A visit counts as bought only when the shop's own order confirmation page loads with an order id. A shopper who says they are done before that is told the shop has not confirmed anything.
 
-There is also a check with no AI at all: axe-core runs on the home, product and cart pages, and a scripted Tab walk records whether each stop on the product page shows where the focus is.
+There is also a check with no AI at all. axe-core runs on the home, product and cart pages. A scripted Tab walk records whether each stop on the product page shows where the focus is. Another opens a "You May Also Like" card by keyboard and records where focus lands. The screen reader view of the checkout form is saved as well.
 
 ## Setup
 
@@ -31,15 +31,32 @@ npm run typecheck
 npm test
 ```
 
+## What happened on Nov 10, 2026
+
+Open `report/index.html` in a browser. It is built from the recorded rounds in `runs/series-b`, shoppers on `gpt-5.5`:
+
+| Round | Shop | Bought |
+|---|---|---|
+| `20261110-0338-before` | released 3.1.0 frontend | 4 of 5, Joel locked out |
+| `20261110-0343-after` | fix 1 | 4 of 5, Joel locked out |
+| `20261110-0349-after2` | fix 1 and fix 2 | 5 of 5 |
+
+- Joel, keyboard only, could not see where he was. Add To Cart had `outline: none` and no other focus style. In his words, "I don't see the focus outline", then "I think the Add To Cart button is focused, so I'll press it". He pressed Enter on product pages 11 times and never reached the cart.
+- Fix 1 gave the shop's buttons a focus outline. Joel could see it, but he was still stuck. Opening a product from "You May Also Like" by keyboard leaves focus on the page body, and the next Tab goes to the next card down the page, so he went round the recommendations. The free scan confirms it on the released shop too (`runs/series-b/release-recheck/scan.json`).
+- Fix 2 moves focus to Add To Cart and scrolls to the top when a product opens. Joel bought in 19 steps.
+- Kofi, on the slow phone, got his confirmation in every round. On the released shop his cart showed empty right after Place Order and he started buying again before the confirmation page loaded. In the first series the same empty cart sent him back to shopping and he never saw a confirmation, though his order had gone through (`runs/series-a/README.md`).
+- The axe-core findings did not change in this series. The AI only fixed what stopped someone. In the first series the first fix also labelled the checkout fields, named the selects and set the page language, and only colour contrast was left (`report/series-a.html`).
+
+The shopper rounds cost 0.83, 0.78 and 0.59 USD, and the two fixes 0.13 and 0.19 USD. Everything from first smoke test to last round, both series, was 4.16 USD in 599 calls, all in `spend/openai.jsonl`.
+
 ## See the saved results, no API key, no cost
 
-The `runs/` folder has the recorded rounds: every step as JSON, a screenshot per step, the scan, the patch and the build result.
+The `runs/` folder has every recorded round: each step as JSON with the shopper's thought, a screenshot per step, the scan, the patch and the build result. Browser videos of each visit are not in the repo, they are too big.
 
 ```sh
-npm run report -- runs/<before-round> runs/<after-round>
+npm run report -- runs/series-b/20261110-0338-before runs/series-b/20261110-0343-after runs/series-b/20261110-0349-after2
+npx tsx scripts/check-report.ts report/index.html   # axe-core on the report itself
 ```
-
-Open `report/index.html` in a browser. The report in the repo is already built from the recorded rounds listed at the bottom of this file.
 
 ## Run the free check on the real shop
 
@@ -66,7 +83,9 @@ bash shop/shop.sh reset     # back to the released frontend
 
 `npx tsx src/cli.ts demo` does the whole loop in one go and resets the shop at the end. `--only joel,maya` runs some of the shoppers.
 
-The shoppers use `gpt-5.4-mini` and the fix uses `gpt-5.5`. `LTI_SHOPPER_MODEL` and `LTI_FIX_MODEL` change them, and the price table in `src/ai.ts` has to know the model. A round of five costs around 0.10 to 0.30 USD. Results change between rounds, since the shoppers are a model.
+To fix again on top of an earlier fix, give the fix step the round after it and the earlier patch: `npm run fix -- runs/<after-round> --on runs/<before-round>/shop.diff`. `fix.diff` in a round folder is what that pass changed, `shop.diff` is everything the shop runs from the release.
+
+The shoppers and the fix use `gpt-5.5`. `LTI_SHOPPER_MODEL` and `LTI_FIX_MODEL` change them, and the price table in `src/ai.ts` has to know the model. A round of five costs under 1 USD. With `gpt-5.4-mini` it is about 0.15 USD, but that keyboard shopper guesses where focus is instead of following the outline, see `runs/series-a/README.md`. Results change between rounds, since the shoppers are a model.
 
 ## How the fix works
 
@@ -86,6 +105,7 @@ src/report.ts     the report page
 shop/             scripts to run the OpenTelemetry Demo
 runs/             recorded rounds
 spend/            every model call with its cost
+scripts/video.ts  builds the demo video from the recorded browser videos, docs/video-story.json is its script
 ```
 
 MIT licence. The OpenTelemetry Demo is Apache 2.0 and is cloned at run time, not copied into this repo.
