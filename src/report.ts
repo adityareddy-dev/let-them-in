@@ -169,6 +169,7 @@ details { margin-top:10px; } summary { cursor:pointer; color:var(--brand); font-
 pre.diff { background:#0f1222; color:#e6e8f2; padding:14px; border-radius:10px; overflow:auto; font-size:13px; line-height:1.45; max-height:520px; }
 pre.diff .add { color:#8ce99a; } pre.diff .del { color:#ffa8a8; } pre.diff .meta { color:#a5b4fc; }
 .helps { color:var(--soft); }
+pre.tree { background:#f1f2f7; padding:12px; border-radius:8px; font-size:13px; overflow:auto; max-height:420px; white-space:pre-wrap; }
 table { border-collapse:collapse; width:100%; } th, td { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; } td { width:90px; font-weight:700; }
 footer { color:var(--soft); font-size:15px; padding:30px 24px; max-width:1120px; margin:0 auto; }
 </style>
@@ -196,6 +197,7 @@ ${fix ? `<p>${esc(fix.summary)}</p><ul>${edits}</ul><p>Shop frontend rebuilt wit
 <p>axe-core on the home, product and cart pages, and a scripted Tab walk on a product page. No AI involved.</p>
 <p>Add To Cart by keyboard: before, ${esc(focusLine(scanB))}. ${afterDir ? `After, ${esc(focusLine(scanA))}.` : ''}</p>
 <table><thead><tr><th scope="col">Rule</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>${ruleRows || '<tr><td colspan="3">No findings</td></tr>'}</tbody></table>
+${scanB?.checkoutFormHeard ? `<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>Before</h4><pre class="tree">${esc(scanB.checkoutFormHeard)}</pre></div><div><h4>After</h4><pre class="tree">${esc(scanA?.checkoutFormHeard ?? '')}</pre></div></div>` : ''}
 </div>
 </main>
 <footer>

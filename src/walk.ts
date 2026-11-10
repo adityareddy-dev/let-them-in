@@ -10,9 +10,9 @@ import { perceive, type Observation } from './perceive.js';
 import type { Mode, Shopper } from './shoppers.js';
 
 export const ACTIONS: Record<Mode, string[]> = {
-  mouse: ['click', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
-  zoom: ['click', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
-  slowphone: ['click', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
+  mouse: ['click', 'click_text', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
+  zoom: ['click', 'click_text', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
+  slowphone: ['click', 'click_text', 'type', 'select', 'scroll_down', 'scroll_up', 'back', 'wait', 'give_up', 'done'],
   keyboard: ['press', 'type', 'wait', 'give_up', 'done'],
   screenreader: ['activate', 'type', 'select', 'press', 'wait', 'give_up', 'done'],
 };
@@ -47,13 +47,16 @@ export function decisionSchema(mode: Mode) {
 const HOW: Record<Mode, string> = {
   mouse:
     'You get a screenshot. Things that look clickable have numbered orange boxes, listed below it. ' +
-    'click a number, type text into a number, select an option in a number, scroll, go back or wait.',
+    'click a number, type text into a number, select an option in a number, scroll, go back or wait. To click words ' +
+    'you can see that have no box, use click_text with those exact words.',
   zoom:
     'You get a screenshot of the zoomed window. Things that look clickable have numbered orange boxes, listed below it. ' +
-    'click a number, type text into a number, select an option in a number, scroll, go back or wait.',
+    'click a number, type text into a number, select an option in a number, scroll, go back or wait. To click words ' +
+    'you can see that have no box, use click_text with those exact words.',
   slowphone:
     'You get a screenshot of your phone. Things that look tappable have numbered orange boxes, listed below it. ' +
-    'click (tap) a number, type text into a number, select an option in a number, scroll, go back or wait for loading.',
+    'click (tap) a number, type text into a number, select an option in a number, scroll, go back or wait for loading. ' +
+    'To tap words you can see that have no box, use click_text with those exact words.',
   keyboard:
     'You get a plain screenshot. You cannot click. press a key (Tab, Shift+Tab, Enter, Space, arrows, Escape) one or more ' +
     'times, or type text into whatever is focused. Look for the focus outline to know where you are. Pressing Tab many ' +
@@ -90,6 +93,7 @@ export interface StepRecord {
   times: number;
   result: string;
   screenshot: string;
+  heard?: string;
   at: string;
 }
 
@@ -124,6 +128,13 @@ async function act(page: Page, mode: Mode, d: Decision, obs: Observation): Promi
       if (mode === 'slowphone') await byMark().tap({ timeout: 6000 });
       else await byMark().click({ timeout: 5000 });
       return { result: 'clicked', label };
+    case 'click_text': {
+      const exact = page.getByText(d.text, { exact: true }).filter({ visible: true });
+      const loc = (await exact.count()) ? exact.first() : page.getByText(d.text).filter({ visible: true }).first();
+      if (mode === 'slowphone') await loc.tap({ timeout: 6000 });
+      else await loc.click({ timeout: 5000 });
+      return { result: 'clicked', label: `text "${d.text}"` };
+    }
     case 'type':
       if (mode === 'keyboard') {
         await page.keyboard.press('ControlOrMeta+a');
@@ -244,6 +255,7 @@ export async function walk(s: Shopper, o: WalkOptions): Promise<Outcome> {
         times: d.times,
         result,
         screenshot: shot,
+        heard: s.mode === 'screenreader' ? obs.text.slice(0, 6000) : undefined,
         at: new Date().toISOString(),
       };
       appendFileSync(stepsFile, JSON.stringify(rec) + '\n');

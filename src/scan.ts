@@ -30,6 +30,7 @@ export interface ScanResult {
   tabStops: TabStop[];
   addToCartTabStop: number | null;
   addToCartShowsFocus: boolean | null;
+  checkoutFormHeard: string;
 }
 
 async function axe(page: Page, label: string): Promise<AxeFinding[]> {
@@ -87,6 +88,8 @@ export async function scan(shopUrl: string, outDir: string): Promise<ScanResult>
     await page.waitForURL(/\/cart/, { timeout: 15000 });
     await page.waitForTimeout(2500);
     findings.push(...(await axe(page, 'cart and checkout form')));
+    // what a screen reader gets from the checkout form
+    const checkoutFormHeard = await page.locator('form').first().ariaSnapshot().catch(() => '');
     const result: ScanResult = {
       shopUrl,
       at: new Date().toISOString(),
@@ -94,6 +97,7 @@ export async function scan(shopUrl: string, outDir: string): Promise<ScanResult>
       tabStops,
       addToCartTabStop: hit?.n ?? null,
       addToCartShowsFocus: hit ? hit.visibleFocus : null,
+      checkoutFormHeard,
     };
     mkdirSync(outDir, { recursive: true });
     writeFileSync(join(outDir, 'scan.json'), JSON.stringify(result, null, 2) + '\n');

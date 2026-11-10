@@ -31,7 +31,12 @@ const MARK_SCRIPT = () => {
     if (r.width < 4 || r.height < 4) return false;
     if (r.bottom < 0 || r.right < 0 || r.top > innerHeight || r.left > innerWidth) return false;
     const st = getComputedStyle(el);
-    return st.visibility !== 'hidden' && st.display !== 'none' && Number(st.opacity) > 0.05;
+    if (st.visibility === 'hidden' || st.display === 'none' || Number(st.opacity) <= 0.05) return false;
+    // only what is on top can be seen and clicked, not things under a drawer or popup
+    const x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1);
+    const y = Math.min(Math.max(r.top + r.height / 2, 0), innerHeight - 1);
+    const top = document.elementFromPoint(x, y);
+    return !!top && (top === el || el.contains(top));
   };
   for (const el of Array.from(document.querySelectorAll(sel))) {
     if (visible(el)) {
