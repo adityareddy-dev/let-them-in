@@ -1,0 +1,28 @@
+{
+  "name": "let-them-in",
+  "version": "1.0.0",
+  "description": "AI shoppers with different access needs try a real shop. See who gets locked out, fix it, send them again.",
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "node --import tsx --test test/*.test.ts",
+    "shop": "bash shop/shop.sh up",
+    "scan": "tsx src/cli.ts scan",
+    "round": "tsx src/cli.ts round",
+    "fix": "tsx src/cli.ts fix",
+    "report": "tsx src/cli.ts report",
+    "spend": "tsx src/cli.ts spend"
+  },
+  "author": "Aditya Reddy",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "playwright": "^1.65.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.14.0"
+  },
+  "private": true
+}

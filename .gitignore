@@ -1,0 +1,8 @@
+node_modules/
+shop/src/
+runs/scratch/
+*.log
+.env
+runs/*/*/video/
+runs/shop-up.log
+runs/**/*.webm

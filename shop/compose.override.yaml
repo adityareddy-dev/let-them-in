@@ -1,0 +1,8 @@
+# Changes to the shop's own compose file, kept small.
+services:
+  frontend:
+    image: lti-shop-frontend:local
+  otel-collector:
+    command: ["--config=/etc/otelcol-min.yml"]
+    volumes:
+      - ./../otelcol-min.yml:/etc/otelcol-min.yml:ro

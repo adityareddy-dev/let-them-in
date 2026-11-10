@@ -1,0 +1,17 @@
+# The shop sends its telemetry here. Let Them In does not need it, so it is accepted and dropped.
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins: ["*"]
+exporters:
+  nop:
+service:
+  pipelines:
+    traces: { receivers: [otlp], exporters: [nop] }
+    metrics: { receivers: [otlp], exporters: [nop] }
+    logs: { receivers: [otlp], exporters: [nop] }
