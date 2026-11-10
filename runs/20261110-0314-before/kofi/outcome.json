@@ -1,0 +1,10 @@
+{
+  "shopper": "kofi",
+  "name": "Kofi",
+  "mode": "slowphone",
+  "outcome": "step_limit",
+  "steps": 20,
+  "lastUrl": "http://127.0.0.1:8090/product/66VCHSJNUP",
+  "reason": "still trying after 20 steps",
+  "lastSay": "I’ll open the telescope."
+}

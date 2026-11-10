@@ -85,18 +85,22 @@ export function buildReport(beforeDir: string, afterDir: string | null, outFile:
   const scanB = loadScan(beforeDir);
   const scanA = afterDir ? loadScan(afterDir) : null;
   const n = before.outcomes.length;
+  const notes = (dir: string | null): Record<string, string> =>
+    dir && existsSync(join(dir, 'notes.json')) ? JSON.parse(readFileSync(join(dir, 'notes.json'), 'utf8')) : {};
+  const notesB = notes(beforeDir);
+  const notesA = notes(afterDir);
 
   const rows = SHOPPERS.filter((s) => before.outcomes.some((o) => o.shopper === s.id))
     .map((s) => {
       const b = before.outcomes.find((o) => o.shopper === s.id);
       const a = after?.outcomes.find((o) => o.shopper === s.id);
-      const quote = b && b.outcome !== 'bought' ? `<blockquote>${esc(b.reason)}</blockquote><p class="where">Stuck on <code>${esc(pathOf(b.lastUrl))}</code></p>` : '';
+      const quote = b && b.outcome !== 'bought' ? `<blockquote>${esc(b.outcome === 'gave_up' ? b.reason : `Last words: ${b.lastSay}`)}</blockquote><p class="where">Stuck on <code>${esc(pathOf(b.lastUrl))}</code></p>` : '';
       return `<article class="shopper" id="${s.id}">
   <header><span class="avatar" aria-hidden="true">${esc(s.name[0])}</span><div><h3>${esc(s.name)}</h3><p class="need">${esc(NEED[s.mode])}</p></div></header>
   <div class="cols">
-    <section aria-label="${esc(s.name)} before the fix"><h4>Before</h4>${badge(b)}${quote}${lastShot(beforeDir, outFile, b)}
+    <section aria-label="${esc(s.name)} before the fix"><h4>Before</h4>${badge(b)}${quote}${notesB[s.id] ? `<p class="note">${esc(notesB[s.id])}</p>` : ''}${lastShot(beforeDir, outFile, b)}
       <details><summary>Every step ${esc(s.name)} took before</summary>${trail(beforeDir, outFile, s.id)}</details></section>
-    <section aria-label="${esc(s.name)} after the fix"><h4>After</h4>${badge(a)}${a && a.outcome !== 'bought' ? `<blockquote>${esc(a.reason)}</blockquote>` : ''}${afterDir ? lastShot(afterDir, outFile, a) : ''}
+    <section aria-label="${esc(s.name)} after the fix"><h4>After</h4>${badge(a)}${a && a.outcome !== 'bought' ? `<blockquote>${esc(a.reason)}</blockquote>` : ''}${notesA[s.id] ? `<p class="note">${esc(notesA[s.id])}</p>` : ''}${afterDir ? lastShot(afterDir, outFile, a) : ''}
       ${afterDir ? `<details><summary>Every step ${esc(s.name)} took after</summary>${trail(afterDir, outFile, s.id)}</details>` : ''}</section>
   </div>
 </article>`;
@@ -145,7 +149,9 @@ main { max-width:1120px; margin:0 auto; padding:24px; }
 .wrap { max-width:1120px; margin:0 auto; }
 .score { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:-46px 0 28px; }
 .score div { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
-.score .big { font-size:46px; font-weight:800; line-height:1; }
+.score p { margin:0; }
+.score .big { font-size:46px; font-weight:800; line-height:1.1; margin-bottom:6px; }
+.score .shopname { font-size:24px; font-weight:800; line-height:1.25; margin-bottom:6px; }
 .score .lbl { color:var(--soft); }
 h2 { font-size:24px; margin:36px 0 12px; }
 .shopper { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin:0 0 18px; }
@@ -159,6 +165,7 @@ h4 { margin:12px 0 6px; font-size:15px; text-transform:uppercase; letter-spacing
 .badge.in { background:var(--in-bg); color:var(--in); } .badge.out { background:var(--out-bg); color:var(--out); } .badge.none { background:#eee; color:#444; }
 blockquote { margin:10px 0; padding:8px 12px; border-left:4px solid var(--out); background:#fff7f7; }
 .where { margin:0 0 8px; color:var(--soft); }
+.note { margin:8px 0; padding:8px 12px; background:#fff8e6; border-left:4px solid #b7791f; }
 .shot { display:block; width:100%; max-height:260px; object-fit:cover; object-position:top; border:1px solid var(--line); border-radius:8px; margin-top:8px; }
 details { margin-top:10px; } summary { cursor:pointer; color:var(--brand); font-weight:600; }
 .trail { padding-left:22px; } .trail li { margin:10px 0; }
@@ -184,7 +191,7 @@ footer { color:var(--soft); font-size:15px; padding:30px 24px; max-width:1120px;
 <div class="score">
 <div><p class="big">${before.bought} of ${n}</p><p class="lbl">bought before the fix</p></div>
 <div><p class="big">${after ? `${after.bought} of ${after.outcomes.length}` : '–'}</p><p class="lbl">bought after the fix</p></div>
-<div><p class="big">${esc(before.shop.split(' (')[0])}</p><p class="lbl">the real shop, frontend unchanged before the fix</p></div>
+<div><p class="shopname">${esc(before.shop.split(' (')[0])}</p><p class="lbl">the real shop, frontend unchanged before the fix</p></div>
 </div>
 <h2>The shoppers</h2>
 ${rows}

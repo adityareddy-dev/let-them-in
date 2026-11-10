@@ -1,0 +1,181 @@
+{
+  "model": "gpt-5.5",
+  "summary": "Fix keyboard-visible focus, make the checkout submit button reachable before the secondary shopping link, prevent the cart from flashing to an empty-cart state during slow order submission, and add non-visual accessible names/labels for controls that shoppers use in the purchase path.",
+  "edits": [
+    {
+      "file": "components/Button/Button.tsx",
+      "find": "  cursor: pointer;\n\n  ${({ $type = 'primary' }) =>",
+      "replace": "  cursor: pointer;\n\n  &:focus-visible {\n    outline: 3px solid #29293E;\n    outline-offset: 3px;\n  }\n\n  ${({ $type = 'primary' }) =>",
+      "why": "This restores a visible keyboard focus indicator on buttons such as Add To Cart and Place Order.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/CheckoutForm/CheckoutForm.styled.ts",
+      "find": "export const SubmitContainer = styled.div`\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 20px;\n  flex-direction: column-reverse;\n\n  ${({ theme }) => theme.breakpoints.desktop} {\n    flex-direction: row;\n    justify-content: end;\n    align-items: center;\n    margin-top: 67px;\n  }\n`;",
+      "replace": "export const SubmitContainer = styled.div`\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  gap: 20px;\n  flex-direction: column;\n\n  ${({ theme }) => theme.breakpoints.desktop} {\n    flex-direction: row;\n    justify-content: end;\n    align-items: center;\n    margin-top: 67px;\n\n    > :first-child {\n      order: 2;\n    }\n\n    > :last-child {\n      order: 1;\n    }\n  }\n`;",
+      "why": "This lets the submit button come first in keyboard order while preserving the same visual button order for mouse users.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/CheckoutForm/CheckoutForm.tsx",
+      "find": "      <S.SubmitContainer>\n        <Link href=\"/\">\n          <S.CartButton $type=\"secondary\">Continue Shopping</S.CartButton>\n        </Link>\n        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=\"submit\">Place Order</S.CartButton>\n      </S.SubmitContainer>",
+      "replace": "      <S.SubmitContainer>\n        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=\"submit\">Place Order</S.CartButton>\n        <Link href=\"/\">\n          <S.CartButton $type=\"secondary\" type=\"button\">Continue Shopping</S.CartButton>\n        </Link>\n      </S.SubmitContainer>",
+      "why": "This makes tabbing after the final payment field land on Place Order instead of the secondary Continue Shopping control.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Input/Input.styled.ts",
+      "find": "export const Input = styled.input`\n  width: -webkit-fill-available;\n  border: none;\n  padding: 16px;\n  outline: none;\n\n  font-weight: ${({ theme }) => theme.fonts.regular};\n  font-size: ${({ theme }) => theme.sizes.dMedium};\n\n  border-radius: 10px;\n  background: #f9f9f9;\n  border: 1px solid #cacaca;\n`;",
+      "replace": "export const Input = styled.input`\n  width: -webkit-fill-available;\n  border: none;\n  padding: 16px;\n  outline: none;\n\n  font-weight: ${({ theme }) => theme.fonts.regular};\n  font-size: ${({ theme }) => theme.sizes.dMedium};\n\n  border-radius: 10px;\n  background: #f9f9f9;\n  border: 1px solid #cacaca;\n\n  &:focus-visible {\n    outline: 3px solid #29293E;\n    outline-offset: 2px;\n  }\n`;",
+      "why": "This restores a visible keyboard focus indicator on checkout text fields.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Input/Input.styled.ts",
+      "find": "export const InputLabel = styled.p`",
+      "replace": "export const InputLabel = styled.label`",
+      "why": "This turns visual checkout field labels into real programmatic labels.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Input/Input.styled.ts",
+      "find": "export const Select = styled.select`\n  width: 100%;\n  border: none;\n\n  padding: 16px;\n  font-weight: ${({ theme }) => theme.fonts.regular};\n  font-size: ${({ theme }) => theme.sizes.dMedium};\n\n  border-radius: 10px;\n  background: #f9f9f9;\n  border: 1px solid #cacaca;\n`;",
+      "replace": "export const Select = styled.select`\n  width: 100%;\n  border: none;\n\n  padding: 16px;\n  font-weight: ${({ theme }) => theme.fonts.regular};\n  font-size: ${({ theme }) => theme.sizes.dMedium};\n\n  border-radius: 10px;\n  background: #f9f9f9;\n  border: 1px solid #cacaca;\n\n  &:focus-visible {\n    outline: 3px solid #29293E;\n    outline-offset: 2px;\n  }\n`;",
+      "why": "This restores a visible keyboard focus indicator on checkout select fields.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Input/Input.tsx",
+      "find": "      <S.InputLabel>{label}</S.InputLabel>",
+      "replace": "      <S.InputLabel htmlFor={id}>{label}</S.InputLabel>",
+      "why": "This associates each checkout label with its corresponding input or select.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/cart/index.tsx",
+      "find": "import { NextPage } from 'next';\nimport Head from 'next/head';",
+      "replace": "import { NextPage } from 'next';\nimport Head from 'next/head';\nimport { useState } from 'react';",
+      "why": "This prepares the cart page to keep the checkout view stable while an order is being placed.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "pages/cart/index.tsx",
+      "find": "  const {\n    cart: { items },\n  } = useCart();",
+      "replace": "  const {\n    cart: { items },\n  } = useCart();\n  const [isPlacingOrder, setIsPlacingOrder] = useState(false);",
+      "why": "This tracks a pending order submission so slow devices are not shown an empty cart before navigation completes.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "pages/cart/index.tsx",
+      "find": "          {(!!items.length && <CartDetail />) || <EmptyCart />}",
+      "replace": "          {((!!items.length || isPlacingOrder) && <CartDetail onPlacingOrderChange={setIsPlacingOrder} />) || <EmptyCart />}",
+      "why": "This prevents the empty-cart page from replacing checkout during a slow order submission.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "components/Cart/CartDetail.tsx",
+      "find": "const CartDetail = () => {",
+      "replace": "interface IProps {\n  onPlacingOrderChange?(isPlacingOrder: boolean): void;\n}\n\nconst CartDetail = ({ onPlacingOrderChange }: IProps) => {",
+      "why": "This lets the cart page know when checkout submission has started.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "components/Cart/CartDetail.tsx",
+      "find": "      const order = await placeOrder({\n        userId,\n        email,\n        address: {\n          streetAddress,\n          state,\n          country,\n          city,\n          zipCode,\n        },\n        userCurrency: selectedCurrency,\n        creditCard: {\n          creditCardCvv,\n          creditCardExpirationMonth,\n          creditCardExpirationYear,\n          creditCardNumber,\n        },\n      });\n\n      push({\n        pathname: `/cart/checkout/${order.orderId}`,\n        query: { order: JSON.stringify(order) },\n      });",
+      "replace": "      onPlacingOrderChange?.(true);\n\n      try {\n        const order = await placeOrder({\n          userId,\n          email,\n          address: {\n            streetAddress,\n            state,\n            country,\n            city,\n            zipCode,\n          },\n          userCurrency: selectedCurrency,\n          creditCard: {\n            creditCardCvv,\n            creditCardExpirationMonth,\n            creditCardExpirationYear,\n            creditCardNumber,\n          },\n        });\n\n        push({\n          pathname: `/cart/checkout/${order.orderId}`,\n          query: { order: JSON.stringify(order) },\n        });\n      } catch (error) {\n        onPlacingOrderChange?.(false);\n        throw error;\n      }",
+      "why": "This marks checkout as pending before the cart can be emptied and restores normal state only if submission fails.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "components/Cart/CartDetail.tsx",
+      "find": "    [placeOrder, push, selectedCurrency]",
+      "replace": "    [onPlacingOrderChange, placeOrder, push, selectedCurrency]",
+      "why": "This keeps the order submission callback up to date with the pending-state handler.",
+      "helps": [
+        "kofi"
+      ]
+    },
+    {
+      "file": "components/CurrencySwitcher/CurrencySwitcher.tsx",
+      "find": "          name=\"currency_code\"\n          onChange={(event: { target: { value: string; }; }) => setSelectedCurrency(event.target.value)}",
+      "replace": "          name=\"currency_code\"\n          aria-label=\"Currency\"\n          onChange={(event: { target: { value: string; }; }) => setSelectedCurrency(event.target.value)}",
+      "why": "This gives the currency selector an accessible name without changing its visual design.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/product/[productId]/index.tsx",
+      "find": "              <Select\n                data-cy={CypressFields.ProductQuantity}\n                onChange={event => setQuantity(+event.target.value)}",
+      "replace": "              <Select\n                data-cy={CypressFields.ProductQuantity}\n                aria-label=\"Quantity\"\n                onChange={event => setQuantity(+event.target.value)}",
+      "why": "This gives the product quantity selector an accessible name for keyboard and assistive technology users.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/CartItems/CartItem.tsx",
+      "find": "        <Select value={quantity} onChange={e => onQuantityChange(id, +e.target.value)}>",
+      "replace": "        <Select value={quantity} aria-label={`Quantity for ${name}`} onChange={e => onQuantityChange(id, +e.target.value)}>",
+      "why": "This gives cart quantity selectors accessible names tied to their products.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Header/Header.styled.ts",
+      "find": "export const BrandImg = styled.img.attrs({\n  src: '/images/opentelemetry-demo-logo.png',\n})`",
+      "replace": "export const BrandImg = styled.img.attrs({\n  src: '/images/opentelemetry-demo-logo.png',\n  alt: 'OpenTelemetry Demo home',\n})`",
+      "why": "This gives the header home link discernible text through the logo image alt text.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/Banner/Banner.styled.ts",
+      "find": "export const BannerImg = styled.img.attrs({\n  src: '/images/Banner.png',\n})`",
+      "replace": "export const BannerImg = styled.img.attrs({\n  src: '/images/Banner.png',\n  alt: '',\n})`",
+      "why": "This marks the decorative banner image so it does not create an unlabeled image stop.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "pages/_document.tsx",
+      "find": "      <Html>",
+      "replace": "      <Html lang=\"en\">",
+      "why": "This identifies the page language for assistive technology.",
+      "helps": [
+        "joel"
+      ]
+    }
+  ],
+  "attempts": 1,
+  "built": true,
+  "buildSeconds": 72,
+  "buildTail": " Container product-catalog Running \n Container cart Running \n Container quote Running \n Container ad Running \n Container email Running \n Container image-provider Running \n Container otel-collector Running \n Container payment Running \n Container shipping Running \n Container checkout Running \n Container recommendation Running \n Container flagd Running \n Container currency Running \n Container valkey-cart Running \n Container frontend Recreate \n Container frontend Recreated \n Container astronomy-db Waiting \n Container valkey-cart Waiting \n Container astronomy-db Healthy \n Container valkey-cart Healthy \n Container currency Waiting \n Container email Waiting \n Container payment Waiting \n Container email Healthy \n Container payment Healthy \n Container currency Healthy \n Container recommendation Waiting \n Container image-provider Waiting \n Container currency Waiting \n Container quote Waiting \n Container ad Waiting \n Container currency Healthy \n Container recommendation Healthy \n Container quote Healthy \n Container ad Healthy \n Container image-provider Healthy \n Container frontend Starting \n Container frontend Started \ncurl: (22) The requested URL returned error: 503\n"
+}

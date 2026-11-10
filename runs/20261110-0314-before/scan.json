@@ -1,0 +1,331 @@
+{
+  "shopUrl": "http://127.0.0.1:8090",
+  "at": "2026-11-10T03:15:13.717Z",
+  "findings": [
+    {
+      "page": "home",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    },
+    {
+      "page": "home",
+      "id": "html-has-lang",
+      "impact": "serious",
+      "help": "<html> element must have a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-has-lang?application=playwright",
+      "nodes": [
+        {
+          "target": "html",
+          "html": "<html>"
+        }
+      ]
+    },
+    {
+      "page": "home",
+      "id": "image-alt",
+      "impact": "critical",
+      "help": "Images must have alternative text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/image-alt?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__BrandImg-sc-e5dde43-4",
+          "html": "<img src=\"/images/opentelemetry-demo-logo.png\" class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\">"
+        },
+        {
+          "target": ".Banner-styled__BannerImg-sc-69914fa1-1",
+          "html": "<img src=\"/images/Banner.png\" class=\"Banner-styled__BannerImg-sc-69914fa1-1 bxplUb\">"
+        }
+      ]
+    },
+    {
+      "page": "home",
+      "id": "link-name",
+      "impact": "serious",
+      "help": "Links must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-name?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__NavBarBrand-sc-e5dde43-3",
+          "html": "<a class=\"Header-styled__NavBarBrand-sc-e5dde43-3 cPxNOl\" href=\"/\"><img src=\"/images/opentelemetry-demo-logo.png\" class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\"></a>"
+        }
+      ]
+    },
+    {
+      "page": "home",
+      "id": "select-name",
+      "impact": "critical",
+      "help": "Select element must have an accessible name",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/select-name?application=playwright",
+      "nodes": [
+        {
+          "target": "select",
+          "html": "<select name=\"currency_code\" data-cy=\"currency-switcher\" class=\"CurrencySwitcher-styled__Select-sc-8b7ef929-4 bwBRRg\">"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".ProductDetail-styled__Description-sc-fdc3469c-7",
+          "html": "<p data-cy=\"product-description\" class=\"ProductDetail-styled__Text-sc-fdc3469c-6 ProductDetail-styled__Description-sc-fdc3469c-7 cHMalg hgUgsC\">"
+        },
+        {
+          "target": ".Ad-styled__Link-sc-d0a39ae4-1 > p",
+          "html": "<p>Solar System Color Imager for sale. 30% off.</p>"
+        },
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "html-has-lang",
+      "impact": "serious",
+      "help": "<html> element must have a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-has-lang?application=playwright",
+      "nodes": [
+        {
+          "target": "html",
+          "html": "<html>"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "image-alt",
+      "impact": "critical",
+      "help": "Images must have alternative text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/image-alt?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__BrandImg-sc-e5dde43-4",
+          "html": "<img src=\"/images/opentelemetry-demo-logo.png\" class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\">"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "link-name",
+      "impact": "serious",
+      "help": "Links must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-name?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__NavBarBrand-sc-e5dde43-3",
+          "html": "<a class=\"Header-styled__NavBarBrand-sc-e5dde43-3 cPxNOl\" href=\"/\"><img src=\"/images/opentelemetry-demo-logo.png\" class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\"></a>"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "select-name",
+      "impact": "critical",
+      "help": "Select element must have an accessible name",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/select-name?application=playwright",
+      "nodes": [
+        {
+          "target": ".CurrencySwitcher-styled__Select-sc-8b7ef929-4",
+          "html": "<select name=\"currency_code\" data-cy=\"currency-switcher\" class=\"CurrencySwitcher-styled__Select-sc-8b7ef929-4 bwBRRg\">"
+        },
+        {
+          "target": ".Select-styled__Select-sc-2a79bd5d-0",
+          "html": "<select data-cy=\"product-quantity\" class=\"Select-styled__Select-sc-2a79bd5d-0 gyyDsP\">"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".Cart-styled__EmptyCartButton-sc-c1c99b1a-8",
+          "html": "<button class=\"Button-sc-3e9ac6d4-0 Cart-styled__EmptyCartButton-sc-c1c99b1a-8 dvJrGC foZBZV\">Empty Cart</button>"
+        },
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "html-has-lang",
+      "impact": "serious",
+      "help": "<html> element must have a lang attribute",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/html-has-lang?application=playwright",
+      "nodes": [
+        {
+          "target": "html",
+          "html": "<html>"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "image-alt",
+      "impact": "critical",
+      "help": "Images must have alternative text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/image-alt?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__BrandImg-sc-e5dde43-4",
+          "html": "<img class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\" src=\"/images/opentelemetry-demo-logo.png\">"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "label",
+      "impact": "critical",
+      "help": "Form elements must have labels",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/label?application=playwright",
+      "nodes": [
+        {
+          "target": "#email",
+          "html": "<input id=\"email\" required=\"\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"email\" value=\"someone@example.com\" name=\"email\">"
+        },
+        {
+          "target": "#street_address",
+          "html": "<input id=\"street_address\" required=\"\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"text\" value=\"1600 Amphitheatre Parkway\" name=\"streetAddress\">"
+        },
+        {
+          "target": "#zip_code",
+          "html": "<input id=\"zip_code\" required=\"\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"text\" value=\"94043\" name=\"zipCode\">"
+        },
+        {
+          "target": "#city",
+          "html": "<input id=\"city\" required=\"\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"text\" value=\"Mountain View\" name=\"city\">"
+        },
+        {
+          "target": "#state",
+          "html": "<input id=\"state\" required=\"\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"text\" value=\"CA\" name=\"state\">"
+        },
+        {
+          "target": "#credit_card_cvv",
+          "html": "<input id=\"credit_card_cvv\" required=\"\" pattern=\"\\d{3}\" class=\"Input-styled__Input-sc-a254e87b-0 fBXxNs\" type=\"password\" value=\"672\" name=\"creditCardCvv\">"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "link-name",
+      "impact": "serious",
+      "help": "Links must have discernible text",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-name?application=playwright",
+      "nodes": [
+        {
+          "target": ".Header-styled__NavBarBrand-sc-e5dde43-3",
+          "html": "<a class=\"Header-styled__NavBarBrand-sc-e5dde43-3 cPxNOl\" href=\"/\"><img class=\"Header-styled__BrandImg-sc-e5dde43-4 cxiQUb\" src=\"/images/opentelemetry-demo-logo.png\"></a>"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "select-name",
+      "impact": "critical",
+      "help": "Select element must have an accessible name",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/select-name?application=playwright",
+      "nodes": [
+        {
+          "target": ".CurrencySwitcher-styled__Select-sc-8b7ef929-4",
+          "html": "<select name=\"currency_code\" data-cy=\"currency-switcher\" class=\"CurrencySwitcher-styled__Select-sc-8b7ef929-4 bwBRRg\">"
+        },
+        {
+          "target": ".Select-styled__Select-sc-2a79bd5d-0",
+          "html": "<select class=\"Select-styled__Select-sc-2a79bd5d-0 gyyDsP\">"
+        },
+        {
+          "target": "#credit_card_expiration_month",
+          "html": "<select id=\"credit_card_expiration_month\" name=\"creditCardExpirationMonth\" class=\"Input-styled__Select-sc-a254e87b-2 jiTAKQ\">"
+        },
+        {
+          "target": "#credit_card_expiration_year",
+          "html": "<select id=\"credit_card_expiration_year\" name=\"creditCardExpirationYear\" class=\"Input-styled__Select-sc-a254e87b-2 jiTAKQ\">"
+        }
+      ]
+    }
+  ],
+  "tabStops": [
+    {
+      "n": 1,
+      "tag": "a",
+      "name": "",
+      "visibleFocus": true
+    },
+    {
+      "n": 2,
+      "tag": "select",
+      "name": "AUD BGN BRL CAD CHF CNY CZK DKK EUR GBP HKD HRK HU",
+      "visibleFocus": true
+    },
+    {
+      "n": 3,
+      "tag": "select",
+      "name": "1 2 3 4 5 6 7 8 9 10",
+      "visibleFocus": true
+    },
+    {
+      "n": 4,
+      "tag": "button",
+      "name": "Add To Cart",
+      "visibleFocus": false
+    },
+    {
+      "n": 5,
+      "tag": "a",
+      "name": "Lens Cleaning Kit $ 21.95",
+      "visibleFocus": true
+    },
+    {
+      "n": 6,
+      "tag": "a",
+      "name": "Red Flashlight $ 57.08",
+      "visibleFocus": true
+    },
+    {
+      "n": 7,
+      "tag": "a",
+      "name": "Eclipsmart Travel Refractor Telescope $ 129.95",
+      "visibleFocus": true
+    },
+    {
+      "n": 8,
+      "tag": "a",
+      "name": "National Park Foundation Explorascope $ 101.96",
+      "visibleFocus": true
+    },
+    {
+      "n": 9,
+      "tag": "a",
+      "name": "Solar System Color Imager for sale. 30% off.",
+      "visibleFocus": true
+    },
+    {
+      "n": 10,
+      "tag": "a",
+      "name": "Source Code",
+      "visibleFocus": true
+    }
+  ],
+  "addToCartTabStop": 4,
+  "addToCartShowsFocus": false,
+  "checkoutFormHeard": "- heading \"Shipping Address\" [level=1]\n- paragraph: E-mail Address\n- textbox: someone@example.com\n- paragraph: Street Address\n- textbox: 1600 Amphitheatre Parkway\n- paragraph: Zip Code\n- textbox: \"94043\"\n- paragraph: City\n- textbox: Mountain View\n- paragraph: State\n- textbox: CA\n- paragraph: Country\n- textbox \"Country Name\": United States\n- heading \"Payment Method\" [level=1]\n- paragraph: Credit Card Number\n- textbox \"0000-0000-0000-0000\": 4432-8015-6152-0454\n- paragraph: Month\n- combobox:\n  - option \"January\" [selected]\n  - option \"February\"\n  - option \"March\"\n  - option \"April\"\n  - option \"May\"\n  - option \"June\"\n  - option \"July\"\n  - option \"August\"\n  - option \"September\"\n  - option \"October\"\n  - option \"November\"\n  - option \"January\"\n- img \"arrow\"\n- paragraph: Year\n- combobox:\n  - option \"2026\"\n  - option \"2027\"\n  - option \"2028\"\n  - option \"2029\"\n  - option \"2030\" [selected]\n  - option \"2031\"\n  - option \"2032\"\n  - option \"2033\"\n  - option \"2034\"\n  - option \"2035\"\n  - option \"2036\"\n  - option \"2037\"\n  - option \"2038\"\n  - option \"2039\"\n  - option \"2040\"\n  - option \"2041\"\n  - option \"2042\"\n  - option \"2043\"\n  - option \"2044\"\n  - option \"2045\"\n- img \"arrow\"\n- paragraph: CVV\n- textbox: \"672\"\n- link \"Continue Shopping\":\n  - /url: /\n  - button \"Continue Shopping\"\n- button \"Place Order\""
+}

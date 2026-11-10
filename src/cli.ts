@@ -34,9 +34,9 @@ async function main() {
       await runRound(args[0] ?? 'before', SHOP, pick());
       break;
     case 'fix': {
-      const dir = args[0] ?? latestRound('before');
+      const dir = args[0] && !args[0].startsWith('--') ? args[0] : latestRound('before');
       if (!dir) throw new Error('no before round found');
-      const f = await makeFix(dir);
+      const f = await makeFix(dir, flag('on'));
       console.log(`fix: ${f.edits.length} edits, build ${f.built ? 'passed' : 'failed'} in ${f.buildSeconds} s`);
       console.log(f.summary);
       break;
@@ -66,7 +66,7 @@ async function main() {
       break;
     }
     default:
-      console.log('usage: tsx src/cli.ts scan | round <label> [--only ids] | fix [beforeDir] | report [before] [after] | demo | spend');
+      console.log('usage: tsx src/cli.ts scan | round <label> [--only ids] | fix [roundDir] [--on earlier/shop.diff] | report [before] [after] | demo | spend');
       process.exitCode = 2;
   }
 }

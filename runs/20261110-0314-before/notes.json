@@ -1,0 +1,4 @@
+{
+  "kofi": "His order did go through. The shop's email service logged an order confirmation at 03:16:56 UTC, just before his Place Order step was written down (email-service.log in this round). His phone showed \"Your shopping cart is empty!\" and no confirmation, so he thought it failed and went back to shopping.",
+  "joel": "No order from Joel reached the shop. email-service.log in this round has four confirmations, one each for Maya, Tom, Ines and Kofi."
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Runs the public OpenTelemetry Demo shop that the shoppers visit.
 #   shop.sh up      clone the shop at a fixed release (first time) and start it
-#   shop.sh fix D   apply patch file D to the shop frontend, rebuild it and restart it
+#   shop.sh fix D   put patch file D on the released frontend, rebuild it and restart it
 #   shop.sh reset   undo any patch and go back to the released frontend
 #   shop.sh down    stop the shop
 set -euo pipefail
@@ -30,7 +30,9 @@ case "${1:-}" in
     compose stop load-generator
     wait_up ;;
   fix)
+    # the patch holds every change from the release, so start from the release each time
     patch="$(realpath "$2")"
+    git -C "$src" checkout -- src/frontend
     git -C "$src" apply --check "$patch"
     git -C "$src" apply "$patch"
     compose build frontend

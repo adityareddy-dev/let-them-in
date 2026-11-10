@@ -4,7 +4,7 @@
 
 import { execFileSync, spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import { askJson, FIX_MODEL } from './ai.js';
 import { loadRound, loadScan, loadSteps } from './round.js';
 
@@ -144,20 +144,33 @@ export interface FixRecord {
   buildTail: string;
 }
 
-export async function makeFix(roundDir: string): Promise<FixRecord> {
+// baseDiff: an earlier fix that the shop in this round already had. The new edits go on top of it.
+export async function makeFix(roundDir: string, baseDiff?: string): Promise<FixRecord> {
   const root = join(SHOP_SRC, FRONTEND);
-  if (git(['status', '--porcelain', FRONTEND]).trim()) throw new Error('shop frontend has local changes, run shop/shop.sh reset first');
-  const files = sourceFiles(root);
   const notes = lockoutNotes(roundDir);
   const round = loadRound(roundDir);
+  const base = baseDiff ? readFileSync(baseDiff, 'utf8') : '';
+  const prepare = () => {
+    git(['reset', '-q', '--', FRONTEND]);
+    git(['checkout', '--', FRONTEND]);
+    if (baseDiff) {
+      git(['apply', resolve(baseDiff)]);
+      git(['add', '--', FRONTEND]);
+    }
+  };
   let feedback = '';
   let last: FixRecord | null = null;
   for (let attempt = 1; attempt <= 2; attempt++) {
+    prepare();
+    const files = sourceFiles(root);
     const plan = await askJson<FixPlan>({
       model: FIX_MODEL,
       system: SYSTEM,
       user: [
         { type: 'input_text', text: `# What happened in the round\n\n${notes}` },
+        ...(base
+          ? [{ type: 'input_text' as const, text: `# An earlier fix is already in the shop\n\nThe source files below already include it. This is that fix:\n\n${base}` }]
+          : []),
         { type: 'input_text', text: `# Frontend source files\n\n${files.map((f) => `=== ${f.path}\n${f.text}`).join('\n\n')}` },
         ...(feedback ? [{ type: 'input_text' as const, text: `# Your previous edits failed\n\n${feedback}\nReturn a corrected full set of edits.` }] : []),
       ],
@@ -173,17 +186,18 @@ export async function makeFix(roundDir: string): Promise<FixRecord> {
       last = { model: FIX_MODEL, summary: plan.summary, edits: plan.edits, attempts: attempt, built: false, buildSeconds: 0, buildTail: feedback };
       continue;
     }
-    const diff = git(['diff', '--', FRONTEND]);
-    const diffFile = join(roundDir, 'fix.diff');
-    writeFileSync(diffFile, diff);
+    // fix.diff is what this pass changed, shop.diff is everything from the release that the shop now runs
+    writeFileSync(join(roundDir, 'fix.diff'), git(['diff', '--', FRONTEND]));
+    const shopDiff = join(roundDir, 'shop.diff');
+    writeFileSync(shopDiff, git(['diff', 'HEAD', '--', FRONTEND]));
+    git(['reset', '-q', '--', FRONTEND]);
     git(['checkout', '--', FRONTEND]);
     const t0 = Date.now();
-    const build = spawnSync('bash', ['shop/shop.sh', 'fix', diffFile], { encoding: 'utf8' });
+    const build = spawnSync('bash', ['shop/shop.sh', 'fix', shopDiff], { encoding: 'utf8' });
     const seconds = Math.round((Date.now() - t0) / 1000);
     const tail = `${build.stdout}\n${build.stderr}`.split('\n').slice(-40).join('\n');
     last = { model: FIX_MODEL, summary: plan.summary, edits: plan.edits, attempts: attempt, built: build.status === 0, buildSeconds: seconds, buildTail: tail };
     if (build.status === 0) break;
-    git(['checkout', '--', FRONTEND]);
     feedback = `The shop build failed:\n${tail}`;
   }
   writeFileSync(join(roundDir, 'fix.json'), JSON.stringify(last, null, 2) + '\n');
