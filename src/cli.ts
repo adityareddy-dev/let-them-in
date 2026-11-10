@@ -19,7 +19,9 @@ function flag(name: string): string | undefined {
 
 function pick() {
   const only = flag('only');
-  return only ? SHOPPERS.filter((s) => only.split(',').includes(s.id)) : SHOPPERS;
+  const steps = flag('steps');
+  const list = only ? SHOPPERS.filter((s) => only.split(',').includes(s.id)) : SHOPPERS;
+  return steps ? list.map((s) => ({ ...s, maxSteps: Number(steps) })) : list;
 }
 
 async function main() {
@@ -42,10 +44,15 @@ async function main() {
       break;
     }
     case 'report': {
-      const before = args[0] ?? latestRound('before');
-      const after = args[1] ?? latestRound('after');
-      if (!before) throw new Error('no before round found');
-      console.log(buildReport(before, after, flag('out') ?? 'report/index.html'));
+      // report <first round> <round after fix 1> [<round after fix 2> ...]
+      const dirs = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--out');
+      if (!dirs.length) {
+        const b = latestRound('before');
+        const a = latestRound('after');
+        if (!b) throw new Error('no before round found');
+        dirs.push(b, ...(a ? [a] : []));
+      }
+      console.log(buildReport(dirs, flag('out') ?? 'report/index.html'));
       break;
     }
     case 'demo': {
@@ -54,7 +61,7 @@ async function main() {
       const f = await makeFix(join(RUNS, b.id));
       if (!f.built) throw new Error('the fix did not build, see fix.json');
       const a = await runRound('after', SHOP, pick());
-      console.log(buildReport(join(RUNS, b.id), join(RUNS, a.id), 'report/index.html'));
+      console.log(buildReport([join(RUNS, b.id), join(RUNS, a.id)], 'report/index.html'));
       if (!args.includes('--keep-fix')) spawnSync('bash', ['shop/shop.sh', 'reset'], { stdio: 'inherit' });
       break;
     }
@@ -66,7 +73,7 @@ async function main() {
       break;
     }
     default:
-      console.log('usage: tsx src/cli.ts scan | round <label> [--only ids] | fix [roundDir] [--on earlier/shop.diff] | report [before] [after] | demo | spend');
+      console.log('usage: tsx src/cli.ts scan | round <label> [--only ids] [--steps n] | fix [roundDir] [--on earlier/shop.diff] | report [round dirs in order] | demo | spend');
       process.exitCode = 2;
   }
 }

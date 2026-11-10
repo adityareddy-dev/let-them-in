@@ -1,0 +1,22 @@
+{
+  "id": "20261110-0330-after2-joel60",
+  "label": "after2-joel60",
+  "shopUrl": "http://127.0.0.1:8090",
+  "shop": "OpenTelemetry Demo 3.1.0 (Astronomy Shop)",
+  "startedAt": "2026-11-10T03:30:33.339Z",
+  "finishedAt": "2026-11-10T03:35:20.323Z",
+  "outcomes": [
+    {
+      "shopper": "joel",
+      "name": "Joel",
+      "mode": "keyboard",
+      "outcome": "step_limit",
+      "steps": 60,
+      "lastUrl": "http://127.0.0.1:8090/cart",
+      "reason": "still trying after 60 steps",
+      "lastSay": "I’ll keep going to checkout."
+    }
+  ],
+  "bought": 0,
+  "spendUsd": 0.1311
+}

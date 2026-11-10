@@ -2,7 +2,7 @@
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { readSpend } from './ai.js';
+import { readSpend, SHOPPER_MODEL } from './ai.js';
 import { scan, type ScanResult } from './scan.js';
 import { SHOPPERS, type Shopper } from './shoppers.js';
 import { walk, type Outcome, type StepRecord } from './walk.js';
@@ -14,6 +14,7 @@ export interface RoundRecord {
   label: string;
   shopUrl: string;
   shop: string;
+  shopperModel?: string;
   startedAt: string;
   finishedAt: string;
   outcomes: Outcome[];
@@ -49,6 +50,7 @@ export async function runRound(label: string, shopUrl: string, shoppers: Shopper
     label,
     shopUrl,
     shop: process.env.LTI_SHOP_NAME ?? 'OpenTelemetry Demo 3.1.0 (Astronomy Shop)',
+    shopperModel: SHOPPER_MODEL,
     startedAt,
     finishedAt: new Date().toISOString(),
     outcomes,

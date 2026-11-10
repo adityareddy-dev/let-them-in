@@ -1,0 +1,122 @@
+{
+  "shopUrl": "http://127.0.0.1:8090",
+  "at": "2026-11-10T03:36:07.162Z",
+  "findings": [
+    {
+      "page": "home",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    },
+    {
+      "page": "product",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".ProductDetail-styled__Description-sc-fdc3469c-7",
+          "html": "<p data-cy=\"product-description\" class=\"ProductDetail-styled__Text-sc-fdc3469c-6 ProductDetail-styled__Description-sc-fdc3469c-7 cHMalg hgUgsC\">"
+        },
+        {
+          "target": ".Ad-styled__Link-sc-d0a39ae4-1 > p",
+          "html": "<p>Starsense Explorer Refractor Telescope for sale. 20% off.</p>"
+        },
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    },
+    {
+      "page": "cart and checkout form",
+      "id": "color-contrast",
+      "impact": "serious",
+      "help": "Elements must meet minimum color contrast ratio thresholds",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=playwright",
+      "nodes": [
+        {
+          "target": ".Cart-styled__EmptyCartButton-sc-c1c99b1a-8",
+          "html": "<button class=\"Button-sc-3e9ac6d4-0 Cart-styled__EmptyCartButton-sc-c1c99b1a-8 bUJkhV foZBZV\">Empty Cart</button>"
+        },
+        {
+          "target": ".PlatformFlag-styled__Block-sc-1797ba3a-0",
+          "html": "<div class=\"PlatformFlag-styled__Block-sc-1797ba3a-0 eSrkBl\">local</div>"
+        }
+      ]
+    }
+  ],
+  "tabStops": [
+    {
+      "n": 1,
+      "tag": "a",
+      "name": "",
+      "visibleFocus": true
+    },
+    {
+      "n": 2,
+      "tag": "select",
+      "name": "Currency",
+      "visibleFocus": true
+    },
+    {
+      "n": 3,
+      "tag": "select",
+      "name": "Quantity",
+      "visibleFocus": true
+    },
+    {
+      "n": 4,
+      "tag": "button",
+      "name": "Add To Cart",
+      "visibleFocus": true
+    },
+    {
+      "n": 5,
+      "tag": "a",
+      "name": "Red Flashlight $ 57.08",
+      "visibleFocus": true
+    },
+    {
+      "n": 6,
+      "tag": "a",
+      "name": "National Park Foundation Explorascope $ 101.96",
+      "visibleFocus": true
+    },
+    {
+      "n": 7,
+      "tag": "a",
+      "name": "Starsense Explorer Refractor Telescope $ 349.95",
+      "visibleFocus": true
+    },
+    {
+      "n": 8,
+      "tag": "a",
+      "name": "Optical Tube Assembly $ 3599.00",
+      "visibleFocus": true
+    },
+    {
+      "n": 9,
+      "tag": "a",
+      "name": "Starsense Explorer Refractor Telescope for sale. 2",
+      "visibleFocus": true
+    },
+    {
+      "n": 10,
+      "tag": "a",
+      "name": "Source Code",
+      "visibleFocus": true
+    }
+  ],
+  "addToCartTabStop": 4,
+  "addToCartShowsFocus": true,
+  "checkoutFormHeard": "- heading \"Shipping Address\" [level=1]\n- text: E-mail Address\n- textbox \"E-mail Address\": someone@example.com\n- text: Street Address\n- textbox \"Street Address\": 1600 Amphitheatre Parkway\n- text: Zip Code\n- textbox \"Zip Code\": \"94043\"\n- text: City\n- textbox \"City\": Mountain View\n- text: State\n- textbox \"State\": CA\n- text: Country\n- textbox \"Country\":\n  - /placeholder: Country Name\n  - text: United States\n- heading \"Payment Method\" [level=1]\n- text: Credit Card Number\n- textbox \"Credit Card Number\":\n  - /placeholder: 0000-0000-0000-0000\n  - text: 4432-8015-6152-0454\n- text: Month\n- combobox \"Month\":\n  - option \"January\" [selected]\n  - option \"February\"\n  - option \"March\"\n  - option \"April\"\n  - option \"May\"\n  - option \"June\"\n  - option \"July\"\n  - option \"August\"\n  - option \"September\"\n  - option \"October\"\n  - option \"November\"\n  - option \"January\"\n- img \"arrow\"\n- text: Year\n- combobox \"Year\":\n  - option \"2026\"\n  - option \"2027\"\n  - option \"2028\"\n  - option \"2029\"\n  - option \"2030\" [selected]\n  - option \"2031\"\n  - option \"2032\"\n  - option \"2033\"\n  - option \"2034\"\n  - option \"2035\"\n  - option \"2036\"\n  - option \"2037\"\n  - option \"2038\"\n  - option \"2039\"\n  - option \"2040\"\n  - option \"2041\"\n  - option \"2042\"\n  - option \"2043\"\n  - option \"2044\"\n  - option \"2045\"\n- img \"arrow\"\n- text: CVV\n- textbox \"CVV\": \"672\"\n- link \"Continue Shopping\":\n  - /url: /\n- button \"Place Order\""
+}

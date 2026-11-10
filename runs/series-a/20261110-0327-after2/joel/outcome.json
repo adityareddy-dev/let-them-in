@@ -1,0 +1,10 @@
+{
+  "shopper": "joel",
+  "name": "Joel",
+  "mode": "keyboard",
+  "outcome": "step_limit",
+  "steps": 30,
+  "lastUrl": "http://127.0.0.1:8090/cart",
+  "reason": "still trying after 30 steps",
+  "lastSay": "I’m going back to the email field now."
+}

@@ -1,0 +1,258 @@
+diff --git a/src/frontend/components/Banner/Banner.styled.ts b/src/frontend/components/Banner/Banner.styled.ts
+index 6aa7d62..1983555 100644
+--- a/src/frontend/components/Banner/Banner.styled.ts
++++ b/src/frontend/components/Banner/Banner.styled.ts
+@@ -17,6 +17,7 @@ export const Banner = styled.div`
+ 
+ export const BannerImg = styled.img.attrs({
+   src: '/images/Banner.png',
++  alt: '',
+ })`
+   width: 100%;
+   height: auto;
+diff --git a/src/frontend/components/Button/Button.tsx b/src/frontend/components/Button/Button.tsx
+index 0807750..fe610fb 100644
+--- a/src/frontend/components/Button/Button.tsx
++++ b/src/frontend/components/Button/Button.tsx
+@@ -17,6 +17,11 @@ const Button = styled.button<{ $type?: 'primary' | 'secondary' | 'link' }>`
+   height: 62px;
+   cursor: pointer;
+ 
++  &:focus-visible {
++    outline: 3px solid #29293E;
++    outline-offset: 3px;
++  }
++
+   ${({ $type = 'primary' }) =>
+     $type === 'secondary' &&
+     css`
+diff --git a/src/frontend/components/Cart/CartDetail.tsx b/src/frontend/components/Cart/CartDetail.tsx
+index 4d777e4..0a161cc 100644
+--- a/src/frontend/components/Cart/CartDetail.tsx
++++ b/src/frontend/components/Cart/CartDetail.tsx
+@@ -13,7 +13,11 @@ import * as S from '../../styles/Cart.styled';
+ 
+ const { userId } = SessionGateway.getSession();
+ 
+-const CartDetail = () => {
++interface IProps {
++  onPlacingOrderChange?(isPlacingOrder: boolean): void;
++}
++
++const CartDetail = ({ onPlacingOrderChange }: IProps) => {
+   const {
+     cart: { items },
+     emptyCart,
+@@ -35,31 +39,38 @@ const CartDetail = () => {
+       creditCardExpirationYear,
+       creditCardNumber,
+     }: IFormData) => {
+-      const order = await placeOrder({
+-        userId,
+-        email,
+-        address: {
+-          streetAddress,
+-          state,
+-          country,
+-          city,
+-          zipCode,
+-        },
+-        userCurrency: selectedCurrency,
+-        creditCard: {
+-          creditCardCvv,
+-          creditCardExpirationMonth,
+-          creditCardExpirationYear,
+-          creditCardNumber,
+-        },
+-      });
++      onPlacingOrderChange?.(true);
++
++      try {
++        const order = await placeOrder({
++          userId,
++          email,
++          address: {
++            streetAddress,
++            state,
++            country,
++            city,
++            zipCode,
++          },
++          userCurrency: selectedCurrency,
++          creditCard: {
++            creditCardCvv,
++            creditCardExpirationMonth,
++            creditCardExpirationYear,
++            creditCardNumber,
++          },
++        });
+ 
+-      push({
+-        pathname: `/cart/checkout/${order.orderId}`,
+-        query: { order: JSON.stringify(order) },
+-      });
++        push({
++          pathname: `/cart/checkout/${order.orderId}`,
++          query: { order: JSON.stringify(order) },
++        });
++      } catch (error) {
++        onPlacingOrderChange?.(false);
++        throw error;
++      }
+     },
+-    [placeOrder, push, selectedCurrency]
++    [onPlacingOrderChange, placeOrder, push, selectedCurrency]
+   );
+ 
+   return (
+diff --git a/src/frontend/components/CartItems/CartItem.tsx b/src/frontend/components/CartItems/CartItem.tsx
+index 3110980..c2a8a16 100644
+--- a/src/frontend/components/CartItems/CartItem.tsx
++++ b/src/frontend/components/CartItems/CartItem.tsx
+@@ -36,7 +36,7 @@ const CartItem = ({
+         </S.NameContainer>
+       </Link>
+       <S.CartItemDetails>
+-        <Select value={quantity} onChange={e => onQuantityChange(id, +e.target.value)}>
++        <Select value={quantity} aria-label={`Quantity for ${name}`} onChange={e => onQuantityChange(id, +e.target.value)}>
+           {quantityOptions.map(o => (
+             <option key={o} value={o}>{o}</option>
+           ))}
+diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.tsx b/src/frontend/components/CheckoutForm/CheckoutForm.tsx
+index 1c8e5c9..78461ca 100644
+--- a/src/frontend/components/CheckoutForm/CheckoutForm.tsx
++++ b/src/frontend/components/CheckoutForm/CheckoutForm.tsx
+@@ -190,8 +190,8 @@ const CheckoutForm = ({ onSubmit }: IProps) => {
+       </S.CardRow>
+ 
+       <S.SubmitContainer>
+-        <Link href="/">
+-          <S.CartButton $type="secondary">Continue Shopping</S.CartButton>
++        <Link href="/" passHref legacyBehavior>
++          <S.CartButton as="a" $type="secondary">Continue Shopping</S.CartButton>
+         </Link>
+         <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type="submit">Place Order</S.CartButton>
+       </S.SubmitContainer>
+diff --git a/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx b/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx
+index 0e3b174..35fd96c 100644
+--- a/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx
++++ b/src/frontend/components/CurrencySwitcher/CurrencySwitcher.tsx
+@@ -18,6 +18,7 @@ const CurrencySwitcher = () => {
+         <S.SelectedConcurrency>{currencySymbol}</S.SelectedConcurrency>
+         <S.Select
+           name="currency_code"
++          aria-label="Currency"
+           onChange={(event: { target: { value: string; }; }) => setSelectedCurrency(event.target.value)}
+           value={selectedCurrency}
+           data-cy={CypressFields.CurrencySwitcher}
+diff --git a/src/frontend/components/Header/Header.styled.ts b/src/frontend/components/Header/Header.styled.ts
+index 39d6240..353ae91 100644
+--- a/src/frontend/components/Header/Header.styled.ts
++++ b/src/frontend/components/Header/Header.styled.ts
+@@ -44,6 +44,7 @@ export const NavBarBrand = styled(Link)`
+ 
+ export const BrandImg = styled.img.attrs({
+   src: '/images/opentelemetry-demo-logo.png',
++  alt: 'OpenTelemetry Demo home',
+ })`
+   width: 280px;
+   height: auto;
+diff --git a/src/frontend/components/Input/Input.styled.ts b/src/frontend/components/Input/Input.styled.ts
+index d2078d1..fcfefdd 100644
+--- a/src/frontend/components/Input/Input.styled.ts
++++ b/src/frontend/components/Input/Input.styled.ts
+@@ -15,9 +15,14 @@ export const Input = styled.input`
+   border-radius: 10px;
+   background: #f9f9f9;
+   border: 1px solid #cacaca;
++
++  &:focus-visible {
++    outline: 3px solid #29293E;
++    outline-offset: 2px;
++  }
+ `;
+ 
+-export const InputLabel = styled.p`
++export const InputLabel = styled.label`
+   font-size: ${({ theme }) => theme.sizes.dMedium};
+   font-weight: ${({ theme }) => theme.fonts.semiBold};
+   margin: 0;
+@@ -35,6 +40,11 @@ export const Select = styled.select`
+   border-radius: 10px;
+   background: #f9f9f9;
+   border: 1px solid #cacaca;
++
++  &:focus-visible {
++    outline: 3px solid #29293E;
++    outline-offset: 2px;
++  }
+ `;
+ 
+ export const InputRow = styled.div`
+diff --git a/src/frontend/components/Input/Input.tsx b/src/frontend/components/Input/Input.tsx
+index 14782b0..840e14d 100644
+--- a/src/frontend/components/Input/Input.tsx
++++ b/src/frontend/components/Input/Input.tsx
+@@ -13,7 +13,7 @@ interface IProps extends InputHTMLAttributes<HTMLSelectElement | HTMLInputElemen
+ const Input = ({ type, id = '', children, label, ...props }: IProps) => {
+   return (
+     <S.InputRow>
+-      <S.InputLabel>{label}</S.InputLabel>
++      <S.InputLabel htmlFor={id}>{label}</S.InputLabel>
+       {type === 'select' ? (
+         <>
+           <S.Select id={id} {...props}>
+diff --git a/src/frontend/pages/_document.tsx b/src/frontend/pages/_document.tsx
+index 8a68bc0..18619b8 100644
+--- a/src/frontend/pages/_document.tsx
++++ b/src/frontend/pages/_document.tsx
+@@ -45,7 +45,7 @@ export default class MyDocument extends Document<{ envString: string }> {
+ 
+   render() {
+     return (
+-      <Html>
++      <Html lang="en">
+         <Head>
+           <link rel="preconnect" href="https://fonts.googleapis.com" />
+           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+diff --git a/src/frontend/pages/cart/index.tsx b/src/frontend/pages/cart/index.tsx
+index 9899283..7df2aa2 100644
+--- a/src/frontend/pages/cart/index.tsx
++++ b/src/frontend/pages/cart/index.tsx
+@@ -3,6 +3,7 @@
+ 
+ import { NextPage } from 'next';
+ import Head from 'next/head';
++import { useState } from 'react';
+ import Layout from '../../components/Layout';
+ import Recommendations from '../../components/Recommendations';
+ import * as S from '../../styles/Cart.styled';
+@@ -15,6 +16,7 @@ const Cart: NextPage = () => {
+   const {
+     cart: { items },
+   } = useCart();
++  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+ 
+   return (
+     <AdProvider
+@@ -26,7 +28,7 @@ const Cart: NextPage = () => {
+       </Head>
+       <Layout>
+         <S.Cart>
+-          {(!!items.length && <CartDetail />) || <EmptyCart />}
++          {((!!items.length || isPlacingOrder) && <CartDetail onPlacingOrderChange={setIsPlacingOrder} />) || <EmptyCart />}
+           <Recommendations />
+         </S.Cart>
+       </Layout>
+diff --git a/src/frontend/pages/product/[productId]/index.tsx b/src/frontend/pages/product/[productId]/index.tsx
+index d3b0b9f..7b8aa38 100644
+--- a/src/frontend/pages/product/[productId]/index.tsx
++++ b/src/frontend/pages/product/[productId]/index.tsx
+@@ -85,6 +85,7 @@ const ProductDetail: NextPage = () => {
+               <S.Text>Quantity</S.Text>
+               <Select
+                 data-cy={CypressFields.ProductQuantity}
++                aria-label="Quantity"
+                 onChange={event => setQuantity(+event.target.value)}
+                 value={quantity}
+               >

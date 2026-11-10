@@ -78,7 +78,7 @@ test('report shows who got in before and after', () => {
       { shopper: 'joel', name: 'Joel', mode: 'keyboard', outcome: 'bought', steps: 9, lastUrl: '', reason: '', lastSay: '' },
     ]);
     const out = join(dir, 'report', 'index.html');
-    buildReport(join(dir, 'b'), join(dir, 'a'), out);
+    buildReport([join(dir, 'b'), join(dir, 'a')], out);
     const html = readFileSync(out, 'utf8');
     assert.match(html, /1 of 2/);
     assert.match(html, /2 of 2/);

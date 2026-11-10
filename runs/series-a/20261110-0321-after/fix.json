@@ -1,0 +1,28 @@
+{
+  "model": "gpt-5.5",
+  "summary": "Fix the checkout button focus order that left the keyboard shopper tabbing past the Place Order control, while preserving the existing visual button order for mouse users.",
+  "edits": [
+    {
+      "file": "components/CheckoutForm/CheckoutForm.tsx",
+      "find": "      <S.SubmitContainer>\n        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=\"submit\">Place Order</S.CartButton>\n        <Link href=\"/\">\n          <S.CartButton $type=\"secondary\" type=\"button\">Continue Shopping</S.CartButton>\n        </Link>\n      </S.SubmitContainer>",
+      "replace": "      <S.SubmitContainer>\n        <Link href=\"/\" passHref legacyBehavior>\n          <S.CartButton as=\"a\" $type=\"secondary\">Continue Shopping</S.CartButton>\n        </Link>\n        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type=\"submit\">Place Order</S.CartButton>\n      </S.SubmitContainer>",
+      "why": "This makes the desktop tab order match the visible button order and removes the nested link/button tab trap before checkout submission.",
+      "helps": [
+        "joel"
+      ]
+    },
+    {
+      "file": "components/CheckoutForm/CheckoutForm.styled.ts",
+      "find": "  flex-direction: column;\n\n  ${({ theme }) => theme.breakpoints.desktop} {\n    flex-direction: row;\n    justify-content: end;\n    align-items: center;\n    margin-top: 67px;\n\n    > :first-child {\n      order: 2;\n    }\n\n    > :last-child {\n      order: 1;\n    }\n  }",
+      "replace": "  flex-direction: column-reverse;\n\n  ${({ theme }) => theme.breakpoints.desktop} {\n    flex-direction: row;\n    justify-content: end;\n    align-items: center;\n    margin-top: 67px;\n  }",
+      "why": "This preserves the current visual button placement while allowing keyboard focus to reach Place Order in the expected sequence.",
+      "helps": [
+        "joel"
+      ]
+    }
+  ],
+  "attempts": 1,
+  "built": true,
+  "buildSeconds": 71,
+  "buildTail": " Container product-catalog Running \n Container shipping Running \n Container cart Running \n Container otel-collector Running \n Container checkout Running \n Container astronomy-db Running \n Container ad Running \n Container payment Running \n Container flagd Running \n Container quote Running \n Container valkey-cart Running \n Container email Running \n Container image-provider Running \n Container recommendation Running \n Container frontend Recreate \n Container frontend Recreated \n Container astronomy-db Waiting \n Container valkey-cart Waiting \n Container valkey-cart Healthy \n Container astronomy-db Healthy \n Container currency Waiting \n Container email Waiting \n Container payment Waiting \n Container email Healthy \n Container currency Healthy \n Container payment Healthy \n Container ad Waiting \n Container currency Waiting \n Container image-provider Waiting \n Container quote Waiting \n Container recommendation Waiting \n Container recommendation Healthy \n Container ad Healthy \n Container image-provider Healthy \n Container quote Healthy \n Container currency Healthy \n Container frontend Starting \n Container frontend Started \ncurl: (22) The requested URL returned error: 503\n"
+}

@@ -4,6 +4,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { loadRound, loadScan, loadSteps, type RoundRecord } from './round.js';
+import type { ScanResult } from './scan.js';
 import { SHOPPERS } from './shoppers.js';
 import type { FixRecord } from './fix.js';
 import type { Outcome } from './walk.js';
@@ -75,57 +76,85 @@ function lastShot(roundDir: string, outFile: string, o?: Outcome): string {
   return `<img class="shot" src="${src}" alt="${esc(o.name)}'s screen at the end, ${esc(pathOf(o.lastUrl))}">`;
 }
 
-export function buildReport(beforeDir: string, afterDir: string | null, outFile: string): string {
-  const before = loadRound(beforeDir);
-  const after: RoundRecord | null = afterDir ? loadRound(afterDir) : null;
-  const fixFile = join(beforeDir, 'fix.json');
-  const fix: FixRecord | null = existsSync(fixFile) ? JSON.parse(readFileSync(fixFile, 'utf8')) : null;
-  const diffFile = join(beforeDir, 'fix.diff');
-  const diff = existsSync(diffFile) ? readFileSync(diffFile, 'utf8') : '';
-  const scanB = loadScan(beforeDir);
-  const scanA = afterDir ? loadScan(afterDir) : null;
-  const n = before.outcomes.length;
-  const notes = (dir: string | null): Record<string, string> =>
-    dir && existsSync(join(dir, 'notes.json')) ? JSON.parse(readFileSync(join(dir, 'notes.json'), 'utf8')) : {};
-  const notesB = notes(beforeDir);
-  const notesA = notes(afterDir);
+export function roundTitle(i: number): string {
+  return i === 0 ? 'Before' : i === 1 ? 'After the fix' : `After fix ${i}`;
+}
+
+// dirs: the first round on the unchanged shop, then one round after each fix.
+// The fix that came after round i is saved in round i's folder.
+export function buildReport(dirs: string[], outFile: string): string {
+  const rounds: RoundRecord[] = dirs.map(loadRound);
+  const before = rounds[0];
+  const titles = dirs.map((_, i) => (dirs.length > 2 && i === 1 ? 'After fix 1' : roundTitle(i)));
+  const scans = dirs.map(loadScan);
+  const notes = dirs.map((d): Record<string, string> =>
+    existsSync(join(d, 'notes.json')) ? JSON.parse(readFileSync(join(d, 'notes.json'), 'utf8')) : {},
+  );
+  const fixes = dirs.slice(0, -1).map((d) => {
+    const f = join(d, 'fix.json');
+    const diff = join(d, 'fix.diff');
+    return {
+      fix: existsSync(f) ? (JSON.parse(readFileSync(f, 'utf8')) as FixRecord) : null,
+      diff: existsSync(diff) ? readFileSync(diff, 'utf8') : '',
+    };
+  });
 
   const rows = SHOPPERS.filter((s) => before.outcomes.some((o) => o.shopper === s.id))
     .map((s) => {
-      const b = before.outcomes.find((o) => o.shopper === s.id);
-      const a = after?.outcomes.find((o) => o.shopper === s.id);
-      const quote = b && b.outcome !== 'bought' ? `<blockquote>${esc(b.outcome === 'gave_up' ? b.reason : `Last words: ${b.lastSay}`)}</blockquote><p class="where">Stuck on <code>${esc(pathOf(b.lastUrl))}</code></p>` : '';
+      const cells = dirs
+        .map((d, i) => {
+          const o = rounds[i].outcomes.find((x) => x.shopper === s.id);
+          const quote =
+            o && o.outcome !== 'bought'
+              ? `<blockquote>${esc(o.outcome === 'gave_up' ? o.reason : `Last words: ${o.lastSay}`)}</blockquote><p class="where">Ended on <code>${esc(pathOf(o.lastUrl))}</code></p>`
+              : '';
+          const note = notes[i][s.id] ? `<p class="note">${esc(notes[i][s.id])}</p>` : '';
+          return `<section aria-label="${esc(s.name)}, ${esc(titles[i].toLowerCase())}"><h4>${esc(titles[i])}</h4>${badge(o)}${quote}${note}${lastShot(d, outFile, o)}
+      <details><summary>Every step, ${esc(titles[i].toLowerCase())}</summary>${trail(d, outFile, s.id)}</details></section>`;
+        })
+        .join('\n');
       return `<article class="shopper" id="${s.id}">
   <header><span class="avatar" aria-hidden="true">${esc(s.name[0])}</span><div><h3>${esc(s.name)}</h3><p class="need">${esc(NEED[s.mode])}</p></div></header>
-  <div class="cols">
-    <section aria-label="${esc(s.name)} before the fix"><h4>Before</h4>${badge(b)}${quote}${notesB[s.id] ? `<p class="note">${esc(notesB[s.id])}</p>` : ''}${lastShot(beforeDir, outFile, b)}
-      <details><summary>Every step ${esc(s.name)} took before</summary>${trail(beforeDir, outFile, s.id)}</details></section>
-    <section aria-label="${esc(s.name)} after the fix"><h4>After</h4>${badge(a)}${a && a.outcome !== 'bought' ? `<blockquote>${esc(a.reason)}</blockquote>` : ''}${notesA[s.id] ? `<p class="note">${esc(notesA[s.id])}</p>` : ''}${afterDir ? lastShot(afterDir, outFile, a) : ''}
-      ${afterDir ? `<details><summary>Every step ${esc(s.name)} took after</summary>${trail(afterDir, outFile, s.id)}</details>` : ''}</section>
+  <div class="cols" style="grid-template-columns:repeat(${dirs.length},1fr)">
+${cells}
   </div>
 </article>`;
     })
     .join('\n');
 
-  const rules = (sc: typeof scanB) => {
+  const rules = scans.map((sc) => {
     const m = new Map<string, number>();
     for (const f of sc?.findings ?? []) m.set(f.id, (m.get(f.id) ?? 0) + f.nodes.length);
     return m;
-  };
-  const rb = rules(scanB);
-  const ra = rules(scanA);
-  const ruleRows = [...new Set([...rb.keys(), ...ra.keys()])]
+  });
+  const allFindings = scans.flatMap((sc) => sc?.findings ?? []);
+  const ruleRows = [...new Set(rules.flatMap((m) => [...m.keys()]))]
     .map((id) => {
-      const help = [...(scanB?.findings ?? []), ...(scanA?.findings ?? [])].find((f) => f.id === id)?.help ?? '';
-      return `<tr><th scope="row"><code>${esc(id)}</code> ${esc(help)}</th><td>${rb.get(id) ?? 0}</td><td>${afterDir ? (ra.get(id) ?? 0) : ''}</td></tr>`;
+      const help = allFindings.find((f) => f.id === id)?.help ?? '';
+      return `<tr><th scope="row"><code>${esc(id)}</code> ${esc(help)}</th>${rules.map((m) => `<td>${m.get(id) ?? 0}</td>`).join('')}</tr>`;
     })
     .join('');
-  const focusLine = (sc: typeof scanB) =>
+  const focusLine = (sc: ScanResult | null) =>
     !sc ? 'not run' : sc.addToCartTabStop === null ? 'never reached by Tab' : `tab stop ${sc.addToCartTabStop}, focus ${sc.addToCartShowsFocus ? 'visible' : 'invisible'}`;
 
-  const edits = fix?.edits
-    .map((e) => `<li><code>${esc(e.file)}</code>: ${esc(e.why)} <span class="helps">Helps ${e.helps.map((h) => esc(SHOPPERS.find((s) => s.id === h)?.name ?? h)).join(', ')}</span></li>`)
+  const fixHtml = fixes
+    .map(({ fix, diff }, i) => {
+      if (!fix) return '';
+      const edits = fix.edits
+        .map((e) => `<li><code>${esc(e.file)}</code>: ${esc(e.why)} <span class="helps">For ${e.helps.map((h) => esc(SHOPPERS.find((x) => x.id === h)?.name ?? h)).join(', ')}</span></li>`)
+        .join('');
+      const head = fixes.length > 1 ? `<h3 id="fix-${i + 1}">Fix ${i + 1}, from the records of round ${esc(titles[i].toLowerCase())}</h3>` : '';
+      return `<div class="box" style="margin-bottom:16px">${head}<p>${esc(fix.summary)}</p><ul>${edits}</ul><p>Shop frontend rebuilt with it: <strong>${fix.built ? `passed in ${fix.buildSeconds} s` : 'failed'}</strong>${fix.attempts > 1 ? `, on attempt ${fix.attempts}` : ''}.</p>${diff ? `<pre class="diff" aria-label="Patch ${i + 1}">${diffHtml(diff)}</pre>` : ''}</div>`;
+    })
+    .join('\n');
+
+  const scoreCards = rounds
+    .map((r, i) => `<div><p class="big">${r.bought} of ${r.outcomes.length}</p><p class="lbl">bought, ${esc(titles[i].toLowerCase())}</p></div>`)
     .join('');
+  const heard = scans[0]?.checkoutFormHeard
+    ? `<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>${esc(titles[0])}</h4><pre class="tree">${esc(scans[0].checkoutFormHeard)}</pre></div><div><h4>${esc(titles[titles.length - 1])}</h4><pre class="tree">${esc(scans[scans.length - 1]?.checkoutFormHeard ?? '')}</pre></div></div>`
+    : '';
+  const cost = rounds.map((r, i) => `${esc(titles[i].toLowerCase())} ${esc(r.spendUsd.toFixed(2))} USD`).join(', ');
 
   const html = `<!doctype html>
 <html lang="en">
@@ -147,7 +176,7 @@ h1 { margin:0; font-size:34px; letter-spacing:-0.5px; }
 .tag { margin:4px 0 0; color:#d9dbea; }
 main { max-width:1120px; margin:0 auto; padding:24px; }
 .wrap { max-width:1120px; margin:0 auto; }
-.score { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:-46px 0 28px; }
+.score { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:-46px 0 28px; }
 .score div { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
 .score p { margin:0; }
 .score .big { font-size:46px; font-weight:800; line-height:1.1; margin-bottom:6px; }
@@ -189,26 +218,23 @@ footer { color:var(--soft); font-size:15px; padding:30px 24px; max-width:1120px;
 </div></div>
 <main id="main">
 <div class="score">
-<div><p class="big">${before.bought} of ${n}</p><p class="lbl">bought before the fix</p></div>
-<div><p class="big">${after ? `${after.bought} of ${after.outcomes.length}` : '–'}</p><p class="lbl">bought after the fix</p></div>
+${scoreCards}
 <div><p class="shopname">${esc(before.shop.split(' (')[0])}</p><p class="lbl">the real shop, frontend unchanged before the fix</p></div>
 </div>
 <h2>The shoppers</h2>
 ${rows}
-<h2 id="fix">The fix</h2>
-<div class="box">
-${fix ? `<p>${esc(fix.summary)}</p><ul>${edits}</ul><p>Shop frontend rebuilt with the patch: <strong>${fix.built ? `passed in ${fix.buildSeconds} s` : 'failed'}</strong>${fix.attempts > 1 ? `, on attempt ${fix.attempts}` : ''}.</p>${diff ? `<pre class="diff" aria-label="The patch">${diffHtml(diff)}</pre>` : ''}` : '<p>No fix yet.</p>'}
-</div>
+<h2 id="fix">${fixes.length > 1 ? 'The fixes' : 'The fix'}</h2>
+${fixHtml || '<div class="box"><p>No fix yet.</p></div>'}
 <h2>Rule-based check</h2>
 <div class="box">
 <p>axe-core on the home, product and cart pages, and a scripted Tab walk on a product page. No AI involved.</p>
-<p>Add To Cart by keyboard: before, ${esc(focusLine(scanB))}. ${afterDir ? `After, ${esc(focusLine(scanA))}.` : ''}</p>
-<table><thead><tr><th scope="col">Rule</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>${ruleRows || '<tr><td colspan="3">No findings</td></tr>'}</tbody></table>
-${scanB?.checkoutFormHeard ? `<h3 id="heard">What a screen reader gets from the checkout form</h3><div class="cols"><div><h4>Before</h4><pre class="tree">${esc(scanB.checkoutFormHeard)}</pre></div><div><h4>After</h4><pre class="tree">${esc(scanA?.checkoutFormHeard ?? '')}</pre></div></div>` : ''}
+<p>Add To Cart by keyboard: ${scans.map((sc, i) => `${esc(titles[i].toLowerCase())}, ${esc(focusLine(sc))}`).join('. ')}.</p>
+<table><thead><tr><th scope="col">Rule (elements failing)</th>${titles.map((t) => `<th scope="col">${esc(t)}</th>`).join('')}</tr></thead><tbody>${ruleRows || `<tr><td colspan="${titles.length + 1}">No findings</td></tr>`}</tbody></table>
+${heard}
 </div>
 </main>
 <footer>
-<p>Before round <code>${esc(before.id)}</code>${after ? `, after round <code>${esc(after.id)}</code>` : ''}. Shop: ${esc(before.shop)}. AI cost: ${esc(before.spendUsd.toFixed(2))} USD before${after ? `, ${esc(after.spendUsd.toFixed(2))} USD after` : ''}. Every model call is in <code>spend/openai.jsonl</code>.</p>
+<p>Rounds ${rounds.map((r) => `<code>${esc(r.id)}</code>`).join(', ')}. Shop: ${esc(before.shop)}. AI cost per round: ${cost}. Every model call is in <code>spend/openai.jsonl</code>.</p>
 </footer>
 </body>
 </html>

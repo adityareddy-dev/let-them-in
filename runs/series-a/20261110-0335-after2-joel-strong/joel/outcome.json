@@ -1,0 +1,11 @@
+{
+  "shopper": "joel",
+  "name": "Joel",
+  "mode": "keyboard",
+  "outcome": "bought",
+  "steps": 17,
+  "lastUrl": "http://127.0.0.1:8090/cart/checkout/14662029-dcb8-11f1-a1b1-8e234a8ce210?order=%7B%22orderId%22%3A%2214662029-dcb8-11f1-a1b1-8e234a8ce210%22%2C%22shippingTrackingId%22%3A%227776f96e-57e4-4d37-b7cd-60753b7ef712%22%2C%22shippingCost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A8%2C%22nanos%22%3A990000000%7D%2C%22shippingAddress%22%3A%7B%22streetAddress%22%3A%221600+Amphitheatre+Parkway%22%2C%22city%22%3A%22Mountain+View%22%2C%22state%22%3A%22CA%22%2C%22country%22%3A%22United+States%22%2C%22zipCode%22%3A%2294043%22%7D%2C%22items%22%3A%5B%7B%22cost%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22item%22%3A%7B%22productId%22%3A%220PUK6V6EV0%22%2C%22quantity%22%3A1%2C%22product%22%3A%7B%22id%22%3A%220PUK6V6EV0%22%2C%22name%22%3A%22Solar+System+Color+Imager%22%2C%22description%22%3A%22You+have+your+new+telescope+and+have+observed+Saturn+and+Jupiter.+Now+you%27re+ready+to+take+the+next+step+and+start+imaging+them.+But+where+do+you+begin%3F+The+NexImage+10+Solar+System+Imager+is+the+perfect+solution.%22%2C%22picture%22%3A%22SolarSystemColorImager.jpg%22%2C%22priceUsd%22%3A%7B%22currencyCode%22%3A%22USD%22%2C%22units%22%3A175%2C%22nanos%22%3A0%7D%2C%22categories%22%3A%5B%22accessories%22%2C%22telescopes%22%5D%7D%7D%7D%5D%7D",
+  "reason": "order complete",
+  "lastSay": "I’m placing the order now.",
+  "orderId": "14662029-dcb8-11f1-a1b1-8e234a8ce210"
+}

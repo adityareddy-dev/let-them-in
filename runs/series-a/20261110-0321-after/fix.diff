@@ -1,0 +1,45 @@
+diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts
+index 748eea8..c11ebc5 100644
+--- a/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts
++++ b/src/frontend/components/CheckoutForm/CheckoutForm.styled.ts
+@@ -28,21 +28,13 @@ export const SubmitContainer = styled.div`
+   justify-content: center;
+   align-items: center;
+   gap: 20px;
+-  flex-direction: column;
++  flex-direction: column-reverse;
+ 
+   ${({ theme }) => theme.breakpoints.desktop} {
+     flex-direction: row;
+     justify-content: end;
+     align-items: center;
+     margin-top: 67px;
+-
+-    > :first-child {
+-      order: 2;
+-    }
+-
+-    > :last-child {
+-      order: 1;
+-    }
+   }
+ `;
+ 
+diff --git a/src/frontend/components/CheckoutForm/CheckoutForm.tsx b/src/frontend/components/CheckoutForm/CheckoutForm.tsx
+index ac48d5b..78461ca 100644
+--- a/src/frontend/components/CheckoutForm/CheckoutForm.tsx
++++ b/src/frontend/components/CheckoutForm/CheckoutForm.tsx
+@@ -190,10 +190,10 @@ const CheckoutForm = ({ onSubmit }: IProps) => {
+       </S.CardRow>
+ 
+       <S.SubmitContainer>
+-        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type="submit">Place Order</S.CartButton>
+-        <Link href="/">
+-          <S.CartButton $type="secondary" type="button">Continue Shopping</S.CartButton>
++        <Link href="/" passHref legacyBehavior>
++          <S.CartButton as="a" $type="secondary">Continue Shopping</S.CartButton>
+         </Link>
++        <S.CartButton data-cy={CypressFields.CheckoutPlaceOrder} type="submit">Place Order</S.CartButton>
+       </S.SubmitContainer>
+     </S.CheckoutForm>
+   );

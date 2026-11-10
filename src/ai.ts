@@ -11,7 +11,7 @@ export const PRICES: Record<string, { input: number; cached: number; output: num
   'gpt-5.5': { input: 5.0, cached: 0.5, output: 30.0 },
 };
 
-export const SHOPPER_MODEL = process.env.LTI_SHOPPER_MODEL ?? 'gpt-5.4-mini';
+export const SHOPPER_MODEL = process.env.LTI_SHOPPER_MODEL ?? 'gpt-5.5';
 export const FIX_MODEL = process.env.LTI_FIX_MODEL ?? 'gpt-5.5';
 export const SPEND_FILE = process.env.LTI_SPEND_FILE ?? 'spend/openai.jsonl';
 
