@@ -6,6 +6,20 @@ The records show where each one got stuck. The AI reads those records and the sh
 
 The shop is the [OpenTelemetry Demo](https://github.com/open-telemetry/opentelemetry-demo) at release 3.1.0, an open source web shop that sells telescopes. Its frontend is not changed before the first round.
 
+## The dashboard
+
+![The dashboard after the third round](docs/dashboard/1-after-fix-2.png)
+
+The dashboard is how you watch it. Each shopper gets a card with their need, their screen right now, what they just said, how far they got (shop, product, cart, confirmed) and whether they got in or were locked out. Above the cards are the rounds side by side with how many got in, the fix that sits between each pair and the AI cost so far. Below them is one shopper step by step with every thought and screenshot, who got in round by round, the patch the AI wrote and the free check.
+
+It reads the same files a round writes as it goes, so it updates live while shoppers are in the shop. A recorded series plays back on the same page with play, pause, speed and a time slider. It works by keyboard and with a screen reader: every control can be reached and used with the keyboard, outcomes are announced, and axe-core finds nothing on it (`scripts/check-dashboard.ts`).
+
+```sh
+npm run dashboard        # http://127.0.0.1:8077, live view of new rounds in runs/
+```
+
+Then open the recorded series from Nov 10 without any API key or cost: http://127.0.0.1:8077/?dir=runs%2Fseries-b&replay=1
+
 ## What the shoppers can do
 
 | Shopper | Need | Perceives | Can do |
@@ -33,7 +47,7 @@ npm test
 
 ## What happened on Nov 10, 2026
 
-Open `report/index.html` in a browser. It is built from the recorded rounds in `runs/series-b`, shoppers on `gpt-5.5`:
+Replay `runs/series-b` on the dashboard, or open `report/index.html` for a static page of the same rounds. Shoppers on `gpt-5.5`:
 
 | Round | Shop | Bought |
 |---|---|---|
@@ -67,12 +81,15 @@ npm run scan        # axe-core and the Tab walk, results in runs/scratch/scan.js
 
 `bash shop/shop.sh down` stops the shop. The shop's own load generator is stopped after start, and its collector is swapped for a small config that drops telemetry, since none of it is needed here.
 
+`runs/live-check` is one more round on the released shop, run while the dashboard was open to check that it follows a round live. 4 of 5 got in and Joel was locked out again, for 0.75 USD.
+
 ## Run new shoppers (paid model calls)
 
 Model calls need an OpenAI key in `OPENAI_API_KEY` or a file named by `OPENAI_API_KEY_FILE`, and a spend limit in `LTI_BUDGET_USD`. Without the limit no call is made. Every call is logged with its tokens and cost in `spend/openai.jsonl` and a call is refused once the logged total reaches the limit.
 
 ```sh
 export OPENAI_API_KEY_FILE=/path/to/key LTI_BUDGET_USD=5
+npm run dashboard &         # watch it live on http://127.0.0.1:8077
 npm run round -- before     # all five shoppers on the unchanged shop
 npm run fix                 # the AI writes a patch from the latest before round, the shop frontend is rebuilt with it
 npm run round -- after      # the same five on the patched shop
@@ -101,11 +118,13 @@ src/walk.ts       one visit, step by step
 src/scan.ts       axe-core and the Tab walk, no AI
 src/round.ts      a round of all shoppers
 src/fix.ts        the patch and the rebuild
-src/report.ts     the report page
+src/report.ts     the static report page
+src/dashboard.ts  the dashboard server, dashboard/ is the page
 shop/             scripts to run the OpenTelemetry Demo
 runs/             recorded rounds
 spend/            every model call with its cost
-scripts/video.ts  builds the demo video from the recorded browser videos, docs/video-story.json is its script
+scripts/dashboard-video.ts  records the demo video from the dashboard playing back runs/series-b
+scripts/video.ts  an earlier demo video from the recorded browser videos, docs/video-story.json is its script
 ```
 
 MIT licence. The OpenTelemetry Demo is Apache 2.0 and is cloned at run time, not copied into this repo.

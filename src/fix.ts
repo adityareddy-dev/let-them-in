@@ -165,7 +165,11 @@ export async function makeFix(roundDir: string, baseDiff?: string): Promise<FixR
   };
   let feedback = '';
   let last: FixRecord | null = null;
+  // fix-status.json lets the dashboard show what the fix is doing while it runs
+  const status = (state: string, attempt: number) =>
+    writeFileSync(join(roundDir, 'fix-status.json'), JSON.stringify({ state, attempt, at: new Date().toISOString() }) + '\n');
   for (let attempt = 1; attempt <= 2; attempt++) {
+    status('writing', attempt);
     prepare();
     const files = sourceFiles(root);
     const plan = await askJson<FixPlan>({
@@ -197,6 +201,7 @@ export async function makeFix(roundDir: string, baseDiff?: string): Promise<FixR
     writeFileSync(shopDiff, git(['diff', 'HEAD', '--', FRONTEND]));
     git(['reset', '-q', '--', FRONTEND]);
     git(['checkout', '--', FRONTEND]);
+    status('building', attempt);
     const t0 = Date.now();
     const build = spawnSync('bash', ['shop/shop.sh', 'fix', shopDiff], { encoding: 'utf8' });
     const seconds = Math.round((Date.now() - t0) / 1000);
@@ -206,5 +211,6 @@ export async function makeFix(roundDir: string, baseDiff?: string): Promise<FixR
     feedback = `The shop build failed:\n${tail}`;
   }
   writeFileSync(join(roundDir, 'fix.json'), JSON.stringify(last, null, 2) + '\n');
+  status(last?.built ? 'built' : 'failed', last?.attempts ?? 0);
   return last!;
 }

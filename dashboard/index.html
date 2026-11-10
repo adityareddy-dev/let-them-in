@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let Them In</title>
+<link rel="stylesheet" href="/app.css">
+<link rel="icon" href="/door.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="skip" href="#shoppers-title">Skip to the shoppers</a>
+<header class="top">
+  <div class="brand">
+    <img src="/door.svg" alt="" width="44" height="44">
+    <div>
+      <p class="brand-name">Let Them In</p>
+      <p class="brand-line">Who does this shop lock out?</p>
+    </div>
+  </div>
+  <div id="mode" class="mode" aria-live="off"></div>
+  <div id="controls" class="controls"></div>
+</header>
+
+<main id="main">
+  <h1 class="sr-only">Let Them In dashboard</h1>
+  <section class="hero" aria-labelledby="hero-title">
+    <h2 id="hero-title" class="sr-only">Rounds and results</h2>
+    <div id="headline" class="headline panel"></div>
+    <div class="rail panel">
+      <h3 class="panel-title">Rounds <span class="hint">Pick a round to see it</span></h3>
+      <ol id="rail" class="rail-list"></ol>
+    </div>
+    <div id="tiles" class="tiles"></div>
+  </section>
+
+  <section class="shoppers" aria-labelledby="shoppers-title" tabindex="-1">
+    <div class="section-head">
+      <h2 id="shoppers-title" class="section-title"></h2>
+      <p id="shoppers-sub" class="section-sub"></p>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <section class="lower">
+    <div class="panel detail" aria-labelledby="detail-title">
+      <div id="detail"></div>
+    </div>
+    <div class="side">
+      <div class="panel" aria-labelledby="matrix-title">
+        <h2 id="matrix-title" class="panel-title">Who got in, round by round</h2>
+        <div id="matrix" tabindex="0" role="region" aria-labelledby="matrix-title"></div>
+      </div>
+      <div class="panel" aria-labelledby="fix-title">
+        <div id="fix"></div>
+      </div>
+      <div class="panel" aria-labelledby="scan-title">
+        <h2 id="scan-title" class="panel-title">Free check, no AI <span class="hint">axe-core and a scripted Tab walk</span></h2>
+        <div id="scan"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p id="foot"></p>
+</footer>
+<div id="announce" class="sr-only" aria-live="polite" aria-atomic="false"></div>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

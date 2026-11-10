@@ -32,6 +32,9 @@ export async function runRound(label: string, shopUrl: string, shoppers: Shopper
   const dir = join(RUNS, id);
   mkdirSync(dir, { recursive: true });
   const startedAt = new Date().toISOString();
+  // start.json tells the dashboard who is in this round before anyone has taken a step
+  const start = { id, label, shopUrl, shopperModel: SHOPPER_MODEL, shoppers: shoppers.map((s) => s.id), startedAt };
+  writeFileSync(join(dir, 'start.json'), JSON.stringify(start, null, 2) + '\n');
   console.log(`round ${id}: scanning ${shopUrl}`);
   await scan(shopUrl, dir);
   console.log(`round ${id}: ${shoppers.length} shoppers start`);

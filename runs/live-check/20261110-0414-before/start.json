@@ -1,0 +1,14 @@
+{
+  "id": "20261110-0414-before",
+  "label": "before",
+  "shopUrl": "http://127.0.0.1:8090",
+  "shopperModel": "gpt-5.5",
+  "shoppers": [
+    "tom",
+    "joel",
+    "maya",
+    "ines",
+    "kofi"
+  ],
+  "startedAt": "2026-11-10T04:14:36.017Z"
+}
